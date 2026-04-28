@@ -251,7 +251,7 @@ class NavBar extends React.Component<Props, State> {
         >
           <Container fluid={true}>
             <Navbar.Brand as={NavLink} to="/search">
-              <img src={logoUrl} alt="Seatsurfing" />
+              <img src={logoUrl} alt="FFW-Buchungssystem" />
             </Navbar.Brand>
             {collapsable}
           </Container>

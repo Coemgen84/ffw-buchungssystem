@@ -64,12 +64,12 @@ class AdminNavBar extends React.Component<Props, State> {
         >
           <img
             src="/ui/seatsurfing_white.svg"
-            alt="Seatsurfing"
+            alt="FFW-Buchungssystem"
             className="d-none d-md-block"
           />
           <img
             src="/ui/seatsurfing_white_logo.svg"
-            alt="Seatsurfing"
+            alt="FFW-Buchungssystem"
             className="d-block d-md-none"
           />
         </Link>

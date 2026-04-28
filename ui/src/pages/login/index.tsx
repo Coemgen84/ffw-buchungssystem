@@ -419,7 +419,7 @@ class Login extends React.Component<Props, State> {
 
     const copyrightFooter = (
       <div className="copyright-footer">
-        &copy; Seatsurfing &#183;{" "}
+        &copy; FFW-Buchungssystem &#183;{" "}
         <a
           href="https://seatsurfing.io"
           target="_blank"
@@ -435,11 +435,11 @@ class Login extends React.Component<Props, State> {
       return (
         <div className="container-signin">
           <Form className="form-signin">
-            <img src="/ui/seatsurfing.svg" alt="Seatsurfing" className="logo" />
+            <img src="/ui/seatsurfing.svg" alt="FFW-Buchungssystem" className="logo" />
             <h3>Domain not found.</h3>
             <p>
               Please make sure your domain name is set up correctly in
-              Seatsurfing&#39;s settings.
+              FFW-Buchungssystem&#39;s settings.
             </p>
             <p>If you believe this is an error, please contact support.</p>
           </Form>
@@ -468,7 +468,7 @@ class Login extends React.Component<Props, State> {
       return (
         <div className="container-signin">
           <Form className="form-signin">
-            <img src="/ui/seatsurfing.svg" alt="Seatsurfing" className="logo" />
+            <img src="/ui/seatsurfing.svg" alt="FFW-Buchungssystem" className="logo" />
             <h3>{this.org?.name}</h3>
             {providerSelection}
             {buttons}
@@ -493,7 +493,7 @@ class Login extends React.Component<Props, State> {
       return (
         <div className="container-signin">
           <Form className="form-signin">
-            <img src="/ui/seatsurfing.svg" alt="Seatsurfing" className="logo" />
+            <img src="/ui/seatsurfing.svg" alt="FFW-Buchungssystem" className="logo" />
             <h3>{this.org?.name}</h3>
             <p>
               Password Login is disabled, but no Auth Providers are configured.
@@ -518,7 +518,7 @@ class Login extends React.Component<Props, State> {
             !this.state.requirePasskey || this.state.requirePasswordUpdate
           }
         >
-          <img src="/ui/seatsurfing.svg" alt="Seatsurfing" className="logo" />
+          <img src="/ui/seatsurfing.svg" alt="FFW-Buchungssystem" className="logo" />
           <h3>{this.org?.name}</h3>
           <p>{this.props.t("passkeyRequired")}</p>
           <Button
@@ -554,7 +554,7 @@ class Login extends React.Component<Props, State> {
           name="totp-login"
           hidden={!this.state.requireTotp}
         >
-          <img src="/ui/seatsurfing.svg" alt="Seatsurfing" className="logo" />
+          <img src="/ui/seatsurfing.svg" alt="FFW-Buchungssystem" className="logo" />
           <h3>{this.org?.name}</h3>
           <p>{this.props.t("enterTotpCode")}</p>
           <Form.Group>
@@ -592,7 +592,7 @@ class Login extends React.Component<Props, State> {
             !this.state.requirePasswordUpdate
           }
         >
-          <img src="/ui/seatsurfing.svg" alt="Seatsurfing" className="logo" />
+          <img src="/ui/seatsurfing.svg" alt="FFW-Buchungssystem" className="logo" />
           <h3>{this.org?.name}</h3>
           <p>{this.props.t("passwordUpdateInfo")}</p>
           <Form.Group style={{ marginBottom: "5px" }}>
@@ -662,7 +662,7 @@ class Login extends React.Component<Props, State> {
             this.state.requirePasswordUpdate
           }
         >
-          <img src="/ui/seatsurfing.svg" alt="Seatsurfing" className="logo" />
+          <img src="/ui/seatsurfing.svg" alt="FFW-Buchungssystem" className="logo" />
           <h3>{this.org?.name}</h3>
           <Form.Group style={{ marginBottom: "5px" }}>
             <Form.Control

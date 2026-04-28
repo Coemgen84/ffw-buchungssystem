@@ -1,0 +1,69 @@
+/* FFW-Buchungssystem — Theme-Overrides
+ * Überschreibt Bootstrap 5.3 Standardfarben mit Feuerwehr-Design
+ * Wird in _app.tsx nach bootstrap.min.css importiert
+ */
+
+:root {
+  /* Primärfarbe: Feuerwehr-Rot */
+  --bs-primary: #dc2626;
+  --bs-primary-rgb: 220, 38, 38;
+  --bs-link-color: #dc2626;
+  --bs-link-hover-color: #b91c1c;
+  --bs-link-color-rgb: 220, 38, 38;
+  --bs-link-hover-color-rgb: 185, 28, 28;
+
+  /* Button-Overrides */
+  --bs-btn-primary-bg: #dc2626;
+  --bs-btn-primary-border-color: #dc2626;
+  --bs-btn-primary-hover-bg: #b91c1c;
+  --bs-btn-primary-hover-border-color: #b91c1c;
+  --bs-btn-primary-active-bg: #991b1b;
+  --bs-btn-primary-active-border-color: #991b1b;
+
+  /* Navbar & Footer */
+  --bs-navbar-active-color: #dc2626;
+  --bs-navbar-brand-color: #dc2626;
+  --bs-navbar-brand-hover-color: #b91c1c;
+
+  /* Sonstige Akzente */
+  --bs-focus-ring-color: rgba(220, 38, 38, 0.25);
+  --bs-danger: #dc2626;
+  --bs-danger-rgb: 220, 38, 38;
+}
+
+/* Active-Transparent-Override (Search.css hat hartcodiertes #0d6efd) */
+.active-transparent:active,
+.active-transparent:focus {
+  background-color: transparent !important;
+  color: #dc2626 !important;
+}
+
+/* Navbar-Active-Link */
+.nav-link.active {
+  color: #dc2626 !important;
+}
+
+/* Custom-Button-Outline im FFW-Stil */
+.btn-outline-ffw {
+  --bs-btn-color: #dc2626;
+  --bs-btn-border-color: #dc2626;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #dc2626;
+  --bs-btn-hover-border-color: #dc2626;
+  --bs-btn-active-bg: #dc2626;
+  --bs-btn-active-border-color: #dc2626;
+}
+
+/* Badge für Einsatzbereitschaft */
+.badge-available {
+  background-color: rgba(22, 163, 74, 0.9) !important;
+}
+.badge-maintenance {
+  background-color: rgba(234, 179, 8, 0.9) !important;
+}
+.badge-unavailable {
+  background-color: rgba(220, 38, 38, 0.9) !important;
+}
+.badge-reserved {
+  background-color: rgba(59, 130, 246, 0.9) !important;
+}

@@ -150,20 +150,20 @@
   color: white;
 }
 
-.space-available {
-  background-color: rgba(48, 209, 88, 0.9) !important;
+.space-einsatzbereit {
+  background-color: rgba(22, 163, 74, 0.9) !important;
 }
 
-.space-notavailable {
-  background-color: rgba(255, 69, 58, 0.9) !important;
+.space-wartung {
+  background-color: rgba(234, 179, 8, 0.9) !important;
 }
 
-.space-mydesk {
-  background-color: rgba(184, 37, 222, 0.9) !important;
+.space-nicht-verfuegbar {
+  background-color: rgba(220, 38, 38, 0.9) !important;
 }
 
-.space-buddy-desk {
-  background-color: rgba(36, 21, 197, 0.9) !important;
+.space-reserviert {
+  background-color: rgba(59, 130, 246, 0.9) !important;
 }
 
 .space-list-item-div {

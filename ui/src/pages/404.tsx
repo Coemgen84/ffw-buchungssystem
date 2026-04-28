@@ -14,7 +14,7 @@ class Error404 extends React.Component<Props> {
     return (
       <div className="container-center">
         <div className="container-center-inner">
-          <img src="/ui/seatsurfing.svg" alt="Seatsurfing" className="logo" />
+          <img src="/ui/seatsurfing.svg" alt="FFW-Buchungssystem" className="logo" />
           <p>
             <a href="/ui/">{this.props.t("error404")}</a>
           </p>

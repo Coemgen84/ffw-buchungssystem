@@ -184,9 +184,14 @@ func (a *App) InitializeDefaultOrg() {
 		log.Println("Creating default organization...")
 		config := GetConfig()
 		domain := config.InitOrgDomain
-		email := config.InitOrgUser + "@" + domain
-		if domain == "localhost" {
-			email = config.InitOrgUser + "@" + "seatsurfing.local"
+		email := config.InitOrgUser
+		if strings.Contains(email, "@") {
+			// Already a full email, use as-is
+		} else {
+			if domain == "" || domain == "localhost" {
+				domain = "seatsurfing.local"
+			}
+			email = config.InitOrgUser + "@" + domain
 		}
 		org := &Organization{
 			Name:             config.InitOrgName,

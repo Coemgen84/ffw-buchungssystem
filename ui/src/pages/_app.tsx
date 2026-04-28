@@ -1,4 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
+import "@/styles/FFW-Theme.css";
 import "@/styles/App.css";
 import "@/styles/AdminNavBar.css";
 import "@/styles/NavBar.css";
@@ -286,7 +287,7 @@ class App extends React.Component<Props, State> {
           <link rel="shortcut icon" href="/ui/favicon-192.png" />
           <link rel="apple-touch-icon" href="/ui/favicon-192.png" />
           <link rel="apple-touch-startup-image" href="/ui/favicon-1024.png" />
-          <title>Seatsurfing</title>
+          <title>FFW-Buchungssystem</title>
         </Head>
         {this.state.showTotpEnforcement && (
           <TotpSetupModal

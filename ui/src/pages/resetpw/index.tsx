@@ -107,7 +107,7 @@ class InitPasswordReset extends React.Component<Props, State> {
           className="container-center-inner"
           onSubmit={this.onPasswordSubmit}
         >
-          <img src="/ui/seatsurfing.svg" alt="Seatsurfing" className="logo" />
+          <img src="/ui/seatsurfing.svg" alt="FFW-Buchungssystem" className="logo" />
           {this.renderContent()}
           <p className="margin-top-50">
             <Link href="/login">{this.props.t("back")}</Link>

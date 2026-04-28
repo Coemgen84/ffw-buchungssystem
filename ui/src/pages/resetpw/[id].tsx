@@ -58,7 +58,7 @@ class CompletePasswordReset extends React.Component<Props, State> {
       return (
         <div className="container-center">
           <div className="container-center-inner">
-            <img src="/ui/seatsurfing.svg" alt="Seatsurfing" className="logo" />
+            <img src="/ui/seatsurfing.svg" alt="FFW-Buchungssystem" className="logo" />
             <p>{this.props.t("passwordChanged")}</p>
             <p>
               <Link href="/login" className="btn btn-primary">
@@ -76,7 +76,7 @@ class CompletePasswordReset extends React.Component<Props, State> {
           className="container-center-inner"
           onSubmit={this.onPasswordSubmit}
         >
-          <img src="/ui/seatsurfing.svg" alt="Seatsurfing" className="logo" />
+          <img src="/ui/seatsurfing.svg" alt="FFW-Buchungssystem" className="logo" />
           <Form.Group>
             <Form.Control
               type="password"
