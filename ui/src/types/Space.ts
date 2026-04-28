@@ -17,6 +17,10 @@ export default class Space extends Entity {
   requireSubject: boolean;
   enabled: boolean;
   kioskEnabled: boolean;
+  spaceType: string;
+  vehicleType: string;
+  licensePlate: string;
+  capacity: number;
   attributes: SpaceAttributeValue[];
   approverGroupIds: string[];
   allowedBookerGroupIds: string[];
@@ -38,6 +42,10 @@ export default class Space extends Entity {
     this.requireSubject = false;
     this.enabled = true;
     this.kioskEnabled = false;
+    this.spaceType = "desk";
+    this.vehicleType = "";
+    this.licensePlate = "";
+    this.capacity = 0;
     this.attributes = [];
     this.approverGroupIds = [];
     this.allowedBookerGroupIds = [];
@@ -60,6 +68,10 @@ export default class Space extends Entity {
       requireSubject: this.requireSubject,
       enabled: this.enabled,
       kioskEnabled: this.kioskEnabled,
+      spaceType: this.spaceType,
+      vehicleType: this.vehicleType,
+      licensePlate: this.licensePlate,
+      capacity: this.capacity,
       attributes: this.attributes.map((a) => a.serialize()),
       approverGroupIds: this.approverGroupIds,
       allowedBookerGroupIds: this.allowedBookerGroupIds,
@@ -78,6 +90,10 @@ export default class Space extends Entity {
     this.requireSubject = input.requireSubject;
     this.enabled = input.enabled;
     this.kioskEnabled = input.kioskEnabled ?? false;
+    this.spaceType = input.spaceType ?? "desk";
+    this.vehicleType = input.vehicleType ?? "";
+    this.licensePlate = input.licensePlate ?? "";
+    this.capacity = input.capacity ?? 0;
     if (input.allowed !== undefined) {
       this.allowed = input.allowed;
     }

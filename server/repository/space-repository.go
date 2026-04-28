@@ -25,6 +25,10 @@ type Space struct {
 	RequireSubject bool
 	Enabled        bool
 	KioskEnabled   bool
+	SpaceType      string
+	VehicleType    string
+	LicensePlate   string
+	Capacity       uint
 }
 
 type SpaceAvailabilityBookingEntry struct {
@@ -113,15 +117,34 @@ func (r *SpaceRepository) RunSchemaUpgrade(curVersion, targetVersion int) {
 			panic(err)
 		}
 	}
+	if curVersion < 43 {
+		if _, err := GetDatabase().DB().Exec("ALTER TABLE spaces " +
+			"ADD COLUMN IF NOT EXISTS space_type VARCHAR DEFAULT 'desk'"); err != nil {
+			panic(err)
+		}
+		if _, err := GetDatabase().DB().Exec("ALTER TABLE spaces " +
+			"ADD COLUMN IF NOT EXISTS vehicle_type VARCHAR DEFAULT ''"); err != nil {
+			panic(err)
+		}
+		if _, err := GetDatabase().DB().Exec("ALTER TABLE spaces " +
+			"ADD COLUMN IF NOT EXISTS license_plate VARCHAR DEFAULT ''"); err != nil {
+			panic(err)
+		}
+		if _, err := GetDatabase().DB().Exec("ALTER TABLE spaces " +
+			"ADD COLUMN IF NOT EXISTS capacity INTEGER DEFAULT 0"); err != nil {
+			panic(err)
+		}
+	}
 }
 
 func (r *SpaceRepository) Create(e *Space) error {
 	var id string
 	err := GetDatabase().DB().QueryRow("INSERT INTO spaces "+
-		"(name, location_id, x, y, width, height, rotation, require_subject, enabled, kiosk_enabled) "+
-		"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) "+
+		"(name, location_id, x, y, width, height, rotation, require_subject, enabled, kiosk_enabled, space_type, vehicle_type, license_plate, capacity) "+
+		"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) "+
 		"RETURNING id",
-		e.Name, e.LocationID, e.X, e.Y, e.Width, e.Height, e.Rotation, e.RequireSubject, e.Enabled, e.KioskEnabled).Scan(&id)
+		e.Name, e.LocationID, e.X, e.Y, e.Width, e.Height, e.Rotation, e.RequireSubject, e.Enabled, e.KioskEnabled,
+		e.SpaceType, e.VehicleType, e.LicensePlate, e.Capacity).Scan(&id)
 	if err != nil {
 		return err
 	}
@@ -131,10 +154,11 @@ func (r *SpaceRepository) Create(e *Space) error {
 
 func (r *SpaceRepository) GetOne(id string) (*Space, error) {
 	e := &Space{}
-	err := GetDatabase().DB().QueryRow("SELECT id, location_id, name, x, y, width, height, rotation, require_subject, enabled, kiosk_enabled "+
+	err := GetDatabase().DB().QueryRow("SELECT id, location_id, name, x, y, width, height, rotation, require_subject, enabled, kiosk_enabled, space_type, vehicle_type, license_plate, capacity "+
 		"FROM spaces "+
 		"WHERE id = $1",
-		id).Scan(&e.ID, &e.LocationID, &e.Name, &e.X, &e.Y, &e.Width, &e.Height, &e.Rotation, &e.RequireSubject, &e.Enabled, &e.KioskEnabled)
+		id).Scan(&e.ID, &e.LocationID, &e.Name, &e.X, &e.Y, &e.Width, &e.Height, &e.Rotation, &e.RequireSubject, &e.Enabled, &e.KioskEnabled,
+		&e.SpaceType, &e.VehicleType, &e.LicensePlate, &e.Capacity)
 	if err != nil {
 		return nil, err
 	}
@@ -149,7 +173,7 @@ func (r *SpaceRepository) GetAllInTime(locationID string, enter, leave time.Time
 		"(bookings.enter_time >= $1 AND bookings.enter_time <= $2) OR " +
 		"(bookings.leave_time >= $1 AND bookings.leave_time <= $2)" +
 		")"
-	rows, err := GetDatabase().DB().Query("SELECT id, location_id, name, x, y, width, height, rotation, require_subject, enabled, kiosk_enabled, "+
+	rows, err := GetDatabase().DB().Query("SELECT id, location_id, name, x, y, width, height, rotation, require_subject, enabled, kiosk_enabled, space_type, vehicle_type, license_plate, capacity, "+
 		"NOT EXISTS(SELECT id FROM bookings WHERE "+subQueryWhere+"), "+
 		"ARRAY(SELECT CONCAT(users.id, '@@@', users.email, '@@@', bookings.enter_time, '@@@', bookings.leave_time, '@@@', bookings.id, '@@@', bookings.subject, '@@@', bookings.recurring_id) FROM bookings INNER JOIN users ON users.id = bookings.user_id WHERE "+subQueryWhere+" ORDER BY bookings.enter_time ASC) "+
 		"FROM spaces "+
@@ -162,7 +186,7 @@ func (r *SpaceRepository) GetAllInTime(locationID string, enter, leave time.Time
 	for rows.Next() {
 		e := &SpaceAvailability{}
 		var bookingUserNames []string
-		err = rows.Scan(&e.ID, &e.LocationID, &e.Name, &e.X, &e.Y, &e.Width, &e.Height, &e.Rotation, &e.RequireSubject, &e.Enabled, &e.KioskEnabled, &e.Available, pq.Array(&bookingUserNames))
+		err = rows.Scan(&e.ID, &e.LocationID, &e.Name, &e.X, &e.Y, &e.Width, &e.Height, &e.Rotation, &e.RequireSubject, &e.Enabled, &e.KioskEnabled, &e.SpaceType, &e.VehicleType, &e.LicensePlate, &e.Capacity, &e.Available, pq.Array(&bookingUserNames))
 		for _, bookingUserName := range bookingUserNames {
 			tokens := strings.Split(bookingUserName, "@@@")
 			timeFormat := "2006-01-02 15:04:05"
@@ -189,7 +213,7 @@ func (r *SpaceRepository) GetAllInTime(locationID string, enter, leave time.Time
 
 func (r *SpaceRepository) GetByKeyword(organizationID string, keyword string) ([]*Space, error) {
 	var result []*Space
-	rows, err := GetDatabase().DB().Query("SELECT spaces.id, spaces.location_id, spaces.name, spaces.x, spaces.y, spaces.width, spaces.height, spaces.rotation, spaces.require_subject, spaces.enabled, spaces.kiosk_enabled "+
+	rows, err := GetDatabase().DB().Query("SELECT spaces.id, spaces.location_id, spaces.name, spaces.x, spaces.y, spaces.width, spaces.height, spaces.rotation, spaces.require_subject, spaces.enabled, spaces.kiosk_enabled, spaces.space_type, spaces.vehicle_type, spaces.license_plate, spaces.capacity "+
 		"FROM spaces "+
 		"INNER JOIN locations ON locations.id = spaces.location_id "+
 		"WHERE locations.organization_id = $1 AND LOWER(spaces.name) LIKE '%' || $2 || '%'"+
@@ -200,7 +224,8 @@ func (r *SpaceRepository) GetByKeyword(organizationID string, keyword string) ([
 	defer rows.Close()
 	for rows.Next() {
 		e := &Space{}
-		err = rows.Scan(&e.ID, &e.LocationID, &e.Name, &e.X, &e.Y, &e.Width, &e.Height, &e.Rotation, &e.RequireSubject, &e.Enabled, &e.KioskEnabled)
+		err = rows.Scan(&e.ID, &e.LocationID, &e.Name, &e.X, &e.Y, &e.Width, &e.Height, &e.Rotation, &e.RequireSubject, &e.Enabled, &e.KioskEnabled,
+			&e.SpaceType, &e.VehicleType, &e.LicensePlate, &e.Capacity)
 		if err != nil {
 			return nil, err
 		}
@@ -211,7 +236,7 @@ func (r *SpaceRepository) GetByKeyword(organizationID string, keyword string) ([
 
 func (r *SpaceRepository) GetAll(locationID string) ([]*Space, error) {
 	var result []*Space
-	rows, err := GetDatabase().DB().Query("SELECT id, location_id, name, x, y, width, height, rotation, require_subject, enabled, kiosk_enabled "+
+	rows, err := GetDatabase().DB().Query("SELECT id, location_id, name, x, y, width, height, rotation, require_subject, enabled, kiosk_enabled, space_type, vehicle_type, license_plate, capacity "+
 		"FROM spaces "+
 		"WHERE location_id = $1 "+
 		"ORDER BY name", locationID)
@@ -221,7 +246,8 @@ func (r *SpaceRepository) GetAll(locationID string) ([]*Space, error) {
 	defer rows.Close()
 	for rows.Next() {
 		e := &Space{}
-		err = rows.Scan(&e.ID, &e.LocationID, &e.Name, &e.X, &e.Y, &e.Width, &e.Height, &e.Rotation, &e.RequireSubject, &e.Enabled, &e.KioskEnabled)
+		err = rows.Scan(&e.ID, &e.LocationID, &e.Name, &e.X, &e.Y, &e.Width, &e.Height, &e.Rotation, &e.RequireSubject, &e.Enabled, &e.KioskEnabled,
+			&e.SpaceType, &e.VehicleType, &e.LicensePlate, &e.Capacity)
 		if err != nil {
 			return nil, err
 		}
@@ -240,9 +266,14 @@ func (r *SpaceRepository) Update(e *Space) error {
 		"rotation = $7, "+
 		"require_subject = $8, "+
 		"enabled = $9, "+
-		"kiosk_enabled = $10 "+
-		"WHERE id = $11",
-		e.LocationID, e.Name, e.X, e.Y, e.Width, e.Height, e.Rotation, e.RequireSubject, e.Enabled, e.KioskEnabled, e.ID)
+		"kiosk_enabled = $10, "+
+		"space_type = $11, "+
+		"vehicle_type = $12, "+
+		"license_plate = $13, "+
+		"capacity = $14 "+
+		"WHERE id = $15",
+		e.LocationID, e.Name, e.X, e.Y, e.Width, e.Height, e.Rotation, e.RequireSubject, e.Enabled, e.KioskEnabled,
+		e.SpaceType, e.VehicleType, e.LicensePlate, e.Capacity, e.ID)
 	return err
 }
 

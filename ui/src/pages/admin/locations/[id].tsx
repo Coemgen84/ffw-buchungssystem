@@ -61,6 +61,10 @@ interface SpaceState {
   requireSubject: boolean;
   enabled: boolean;
   kioskEnabled: boolean;
+  spaceType: string;
+  vehicleType: string;
+  licensePlate: string;
+  capacity: number;
   changed: boolean;
   attributes: Map<string, string>;
   enabledAttributes: string[];
@@ -452,6 +456,10 @@ class EditLocation extends React.Component<Props, State> {
         : RuntimeConfig.INFOS.subjectDefault === 3,
       enabled: e ? e.enabled : true,
       kioskEnabled: e ? e.kioskEnabled : false,
+      spaceType: e ? e.spaceType : "desk",
+      vehicleType: e ? e.vehicleType : "",
+      licensePlate: e ? e.licensePlate : "",
+      capacity: e ? e.capacity : 0,
       changed: true,
       attributes: new Map<string, string>(),
       enabledAttributes: [],
@@ -1081,6 +1089,99 @@ class EditLocation extends React.Component<Props, State> {
                   )}
               </Col>
             </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="4" htmlFor="space-type">
+                {this.props.t("type")}
+              </Form.Label>
+              <Col sm="8">
+                <Form.Select
+                  id="space-type"
+                  value={this.getSelectedSpace()?.spaceType || "desk"}
+                  onChange={(e: any) => {
+                    const spaces = this.state.spaces;
+                    const idx = this.state.selectedSpace!;
+                    const space = { ...spaces[idx] };
+                    space.spaceType = e.target.value;
+                    space.changed = true;
+                    spaces[idx] = space;
+                    this.setState({ spaces: spaces, changed: true });
+                  }}
+                >
+                  <option value="desk">{this.props.t("desk")}</option>
+                  <option value="vehicle">{this.props.t("vehicle")}</option>
+                </Form.Select>
+              </Col>
+            </Form.Group>
+            {this.getSelectedSpace()?.spaceType === "vehicle" && (
+              <>
+                <Form.Group as={Row}>
+                  <Form.Label column sm="4" htmlFor="space-vehicle-type">
+                    {this.props.t("vehicleType")}
+                  </Form.Label>
+                  <Col sm="8">
+                    <Form.Control
+                      id="space-vehicle-type"
+                      type="text"
+                      placeholder={this.props.t("vehicleType")}
+                      value={this.getSelectedSpace()?.vehicleType || ""}
+                      onChange={(e: any) => {
+                        const spaces = this.state.spaces;
+                        const idx = this.state.selectedSpace!;
+                        const space = { ...spaces[idx] };
+                        space.vehicleType = e.target.value;
+                        space.changed = true;
+                        spaces[idx] = space;
+                        this.setState({ spaces: spaces, changed: true });
+                      }}
+                    />
+                  </Col>
+                </Form.Group>
+                <Form.Group as={Row}>
+                  <Form.Label column sm="4" htmlFor="space-license-plate">
+                    {this.props.t("licensePlate")}
+                  </Form.Label>
+                  <Col sm="8">
+                    <Form.Control
+                      id="space-license-plate"
+                      type="text"
+                      placeholder={this.props.t("licensePlate")}
+                      value={this.getSelectedSpace()?.licensePlate || ""}
+                      onChange={(e: any) => {
+                        const spaces = this.state.spaces;
+                        const idx = this.state.selectedSpace!;
+                        const space = { ...spaces[idx] };
+                        space.licensePlate = e.target.value;
+                        space.changed = true;
+                        spaces[idx] = space;
+                        this.setState({ spaces: spaces, changed: true });
+                      }}
+                    />
+                  </Col>
+                </Form.Group>
+                <Form.Group as={Row}>
+                  <Form.Label column sm="4" htmlFor="space-capacity">
+                    {this.props.t("capacity")}
+                  </Form.Label>
+                  <Col sm="8">
+                    <Form.Control
+                      id="space-capacity"
+                      type="number"
+                      min={0}
+                      value={this.getSelectedSpace()?.capacity || 0}
+                      onChange={(e: any) => {
+                        const spaces = this.state.spaces;
+                        const idx = this.state.selectedSpace!;
+                        const space = { ...spaces[idx] };
+                        space.capacity = parseInt(e.target.value) || 0;
+                        space.changed = true;
+                        spaces[idx] = space;
+                        this.setState({ spaces: spaces, changed: true });
+                      }}
+                    />
+                  </Col>
+                </Form.Group>
+              </>
+            )}
             <Form.Group as={Row}>
               <Form.Label column sm="4" htmlFor="search-approvers-input">
                 {this.props.t("approvers")}

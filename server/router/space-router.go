@@ -29,6 +29,10 @@ type CreateSpaceRequest struct {
 	RequireSubject        bool                         `json:"requireSubject"`
 	Enabled               bool                         `json:"enabled"`
 	KioskEnabled          bool                         `json:"kioskEnabled"`
+	SpaceType             string                       `json:"spaceType"`
+	VehicleType           string                       `json:"vehicleType"`
+	LicensePlate          string                       `json:"licensePlate"`
+	Capacity              uint                         `json:"capacity"`
 	Attributes            []SpaceAttributeValueRequest `json:"attributes"`
 	ApproverGroupIDs      []string                     `json:"approverGroupIds"`
 	AllowedBookerGroupIDs []string                     `json:"allowedBookerGroupIds"`
@@ -929,6 +933,10 @@ func (router *SpaceRouter) copyFromRestModel(m *CreateSpaceRequest) *Space {
 	e.RequireSubject = m.RequireSubject
 	e.Enabled = m.Enabled
 	e.KioskEnabled = m.KioskEnabled
+	e.SpaceType = m.SpaceType
+	e.VehicleType = m.VehicleType
+	e.LicensePlate = m.LicensePlate
+	e.Capacity = m.Capacity
 	return e
 }
 
