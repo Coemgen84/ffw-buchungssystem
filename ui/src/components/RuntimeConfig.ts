@@ -101,35 +101,27 @@ export default class RuntimeConfig {
 
   static verifyToken = async (resolve: Function) => {
     try {
-      console.log("[FFW-DEBUG] verifyToken called");
       let credentials = Ajax.PERSISTER.readCredentialsFromLocalStorage();
-      console.log("[FFW-DEBUG] credentials read, accessToken:", !!credentials.accessToken);
       if (!credentials.accessToken) {
         const refreshToken = Ajax.PERSISTER.readRefreshTokenFromLocalStorage();
-        console.log("[FFW-DEBUG] refreshToken:", !!refreshToken);
         if (refreshToken) {
           await Ajax.refreshAccessToken(refreshToken);
           credentials = Ajax.PERSISTER.readCredentialsFromLocalStorage();
         }
       }
       if (credentials.accessToken) {
-        console.log("[FFW-DEBUG] has accessToken, loading user...");
         RuntimeConfig.loadUserAndSettings()
           .then(() => {
-            console.log("[FFW-DEBUG] loadUserAndSettings success, resolving");
             resolve();
           })
           .catch((e) => {
-            console.log("[FFW-DEBUG] loadUserAndSettings failed:", e);
             Ajax.PERSISTER.deleteCredentialsFromStorage();
             resolve();
           });
       } else {
-        console.log("[FFW-DEBUG] no accessToken, resolving immediately");
         resolve();
       }
     } catch (e) {
-      console.error("[FFW-DEBUG] verifyToken unexpected error:", e);
       resolve();
     }
   };
