@@ -194,7 +194,7 @@ export default class Ajax {
       cache: "no-cache",
       credentials: "same-origin",
       headers,
-      signal: AbortSignal.timeout(30000),
+      signal: typeof AbortSignal.timeout === "function" ? AbortSignal.timeout(30000) : undefined,
     };
     if (data) {
       if (data instanceof File) {

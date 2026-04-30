@@ -36,6 +36,9 @@ class Doc extends Document<Props> {
           csp.get("script-src")?.concat(["'unsafe-eval'", "'unsafe-inline'"]),
         ),
       );
+    } else {
+      // Production: explicitly allow connect-src for same-origin API calls
+      csp.set("connect-src", ["'self'"]);
     }
     let cspString = "";
     csp.keys().forEach((key) => {

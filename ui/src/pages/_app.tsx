@@ -65,8 +65,11 @@ class App extends React.Component<Props, State> {
   }
 
   componentDidMount() {
+    console.log("[FFW-DEBUG] _app componentDidMount");
     setTimeout(() => {
+      console.log("[FFW-DEBUG] setTimeout fired, calling verifyToken");
       RuntimeConfig.verifyToken(() => {
+        console.log("[FFW-DEBUG] verifyToken callback, setting isLoading=false");
         this.setState(
           {
             isLoading: false,
