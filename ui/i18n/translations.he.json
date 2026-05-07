@@ -446,5 +446,9 @@
   "room": "חדר",
   "vehicle": "רכב",
   "vehicleType": "סוג רכב",
-  "licensePlate": "לוחית רישוי"
+  "licensePlate": "לוחית רישוי",
+  "hideReports": "Disable user-related reports",
+  "reportSettings": "Report settings",
+  "hideStats": "Disable utilization statistics",
+  "statsHiddenByAdmin": "Utilization statistics are disabled by your administrator."
 }

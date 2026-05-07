@@ -446,5 +446,9 @@
   "room": "Ruum",
   "vehicle": "Sõiduk",
   "vehicleType": "Sõiduki tüüp",
-  "licensePlate": "Numbrimärk"
+  "licensePlate": "Numbrimärk",
+  "hideReports": "Disable user-related reports",
+  "reportSettings": "Report settings",
+  "hideStats": "Disable utilization statistics",
+  "statsHiddenByAdmin": "Utilization statistics are disabled by your administrator."
 }

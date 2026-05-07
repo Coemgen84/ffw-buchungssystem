@@ -446,5 +446,9 @@
   "room": "Kamer",
   "vehicle": "Voertuig",
   "vehicleType": "Voertuigtype",
-  "licensePlate": "Kenteken"
+  "licensePlate": "Kenteken",
+  "hideReports": "Disable user-related reports",
+  "reportSettings": "Report settings",
+  "hideStats": "Disable utilization statistics",
+  "statsHiddenByAdmin": "Utilization statistics are disabled by your administrator."
 }

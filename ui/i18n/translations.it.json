@@ -446,5 +446,9 @@
   "room": "Stanza",
   "vehicle": "Veicolo",
   "vehicleType": "Tipo di veicolo",
-  "licensePlate": "Targa"
+  "licensePlate": "Targa",
+  "hideReports": "Disable user-related reports",
+  "reportSettings": "Report settings",
+  "hideStats": "Disable utilization statistics",
+  "statsHiddenByAdmin": "Utilization statistics are disabled by your administrator."
 }

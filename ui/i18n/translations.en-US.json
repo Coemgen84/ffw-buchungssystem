@@ -456,5 +456,9 @@
   "yourDomainPlaceholder": "seatsurfing.your-domain.com",
   "vehicle": "Vehicle",
   "vehicleType": "Vehicle type",
-  "licensePlate": "License plate"
+  "licensePlate": "License plate",
+  "hideReports": "Disable user-related reports",
+  "reportSettings": "Report settings",
+  "hideStats": "Disable utilization statistics",
+  "statsHiddenByAdmin": "Utilization statistics are disabled by your administrator."
 }

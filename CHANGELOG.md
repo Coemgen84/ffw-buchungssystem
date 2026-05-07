@@ -1,5 +1,41 @@
 # Changelog
 
+## [1.89.0](https://github.com/seatsurfing/seatsurfing/compare/v1.88.1...v1.89.0) (2026-05-06)
+
+
+### Features
+
+* add space calendar view ([#2063](https://github.com/seatsurfing/seatsurfing/issues/2063)) ([1b1f9d2](https://github.com/seatsurfing/seatsurfing/commit/1b1f9d23e3582c39d99fc8e6b0fa9b901e06202d))
+
+
+### Bug Fixes
+
+* **deps:** bump moment-timezone from 0.6.1 to 0.6.2 in /ui in the production-dependencies group across 1 directory ([#2081](https://github.com/seatsurfing/seatsurfing/issues/2081)) ([ec37a23](https://github.com/seatsurfing/seatsurfing/commit/ec37a2337c62d12ec3543b478399f91d6940666b))
+* improve startup warnings ([#2086](https://github.com/seatsurfing/seatsurfing/issues/2086)) ([5af0c70](https://github.com/seatsurfing/seatsurfing/commit/5af0c7055f61882c7308cc898365650824cfccd8))
+
+## [1.88.1](https://github.com/seatsurfing/seatsurfing/compare/v1.88.0...v1.88.1) (2026-04-30)
+
+
+### Bug Fixes
+
+* fix infinite redirect when stats dashboard disabled ([#2074](https://github.com/seatsurfing/seatsurfing/issues/2074)) ([16cfaae](https://github.com/seatsurfing/seatsurfing/commit/16cfaaee393864ab345b8030007ed367db5714e5))
+
+## [1.88.0](https://github.com/seatsurfing/seatsurfing/compare/v1.87.1...v1.88.0) (2026-04-29)
+
+
+### Features
+
+* add admin "disable user-related reports" option ([#2024](https://github.com/seatsurfing/seatsurfing/issues/2024)) ([05066dd](https://github.com/seatsurfing/seatsurfing/commit/05066dd020a0c421df26922c6d31d8aa3cd62214))
+* add admin "disable utilization statistics" option ([#2072](https://github.com/seatsurfing/seatsurfing/issues/2072)) ([eb71de3](https://github.com/seatsurfing/seatsurfing/commit/eb71de3eb69c3ab948b67f2d49abe6c3ba0d5f04))
+
+
+### Bug Fixes
+
+* **deps:** bump github.com/go-webauthn/webauthn from 0.16.4 to 0.16.5 in /server in the minor-and-patch group ([#2066](https://github.com/seatsurfing/seatsurfing/issues/2066)) ([fd03d40](https://github.com/seatsurfing/seatsurfing/commit/fd03d409ddbafffc39db175055ad42970fed56fe))
+* **deps:** bump github.com/go-webauthn/webauthn from 0.16.5 to 0.17.0 in /server in the minor-and-patch group ([#2070](https://github.com/seatsurfing/seatsurfing/issues/2070)) ([95e31b4](https://github.com/seatsurfing/seatsurfing/commit/95e31b4ee44d1598f11945d2a429fbf0fb273487))
+* improve hide reports feature ([#2071](https://github.com/seatsurfing/seatsurfing/issues/2071)) ([11d7d20](https://github.com/seatsurfing/seatsurfing/commit/11d7d204581247bc382e2896d0a7499cd4bd7b16))
+* translate "Event" and change close button label ([#2056](https://github.com/seatsurfing/seatsurfing/issues/2056)) ([335c9f8](https://github.com/seatsurfing/seatsurfing/commit/335c9f8a6e9091bfd4c0afb7d2a708975d7d704a))
+
 ## [1.87.1](https://github.com/seatsurfing/seatsurfing/compare/v1.87.0...v1.87.1) (2026-04-25)
 
 

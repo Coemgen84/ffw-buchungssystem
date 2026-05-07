@@ -446,5 +446,9 @@
   "room": "Cameră",
   "vehicle": "Vehicul",
   "vehicleType": "Tip de vehicul",
-  "licensePlate": "Număr de înmatriculare"
+  "licensePlate": "Număr de înmatriculare",
+  "hideReports": "Disable user-related reports",
+  "reportSettings": "Report settings",
+  "hideStats": "Disable utilization statistics",
+  "statsHiddenByAdmin": "Utilization statistics are disabled by your administrator."
 }

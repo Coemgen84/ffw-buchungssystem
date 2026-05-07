@@ -446,5 +446,9 @@
   "room": "Pokój",
   "vehicle": "Pojazd",
   "vehicleType": "Typ pojazdu",
-  "licensePlate": "Nr rejestracyjny"
+  "licensePlate": "Nr rejestracyjny",
+  "hideReports": "Disable user-related reports",
+  "reportSettings": "Report settings",
+  "hideStats": "Disable utilization statistics",
+  "statsHiddenByAdmin": "Utilization statistics are disabled by your administrator."
 }

@@ -444,5 +444,9 @@
   "room": "Huone",
   "vehicle": "Ajoneuvo",
   "vehicleType": "Ajoneuvotyyppi",
-  "licensePlate": "Rekisterinumero"
+  "licensePlate": "Rekisterinumero",
+  "hideReports": "Disable user-related reports",
+  "reportSettings": "Report settings",
+  "hideStats": "Disable utilization statistics",
+  "statsHiddenByAdmin": "Utilization statistics are disabled by your administrator."
 }
