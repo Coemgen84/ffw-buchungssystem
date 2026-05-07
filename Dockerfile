@@ -1,16 +1,5 @@
 FROM --platform=$BUILDPLATFORM docker.io/tonistiigi/xx AS xx
 
-FROM --platform=$BUILDPLATFORM node:lts-alpine AS ui-builder
-RUN apk add --no-cache jq bash
-ARG CI_VERSION
-ENV NEXT_PUBLIC_PRODUCT_VERSION=$CI_VERSION
-ENV NODE_ENV=production
-ADD ui /app/
-WORKDIR /app
-RUN ./add-missing-translations.sh
-RUN npm ci
-RUN npm run build
-
 FROM --platform=$BUILDPLATFORM docker.io/library/golang:1.26.1-bookworm AS server-builder
 RUN apt-get update && apt-get install -y clang lld
 COPY --from=xx / /
@@ -37,7 +26,7 @@ LABEL org.opencontainers.image.source="https://github.com/seatsurfing/seatsurfin
       org.opencontainers.image.documentation="https://seatsurfing.io/docs/"
 COPY --from=server-builder /go/src/app/main /app/
 COPY --from=healthcheck-builder /go/src/healthcheck/healthcheck /app/
-COPY --from=ui-builder /app/build/ /app/ui
+ADD ui/build/ /app/ui/
 COPY server/res/ /app/res
 ADD version.txt /app/
 WORKDIR /app

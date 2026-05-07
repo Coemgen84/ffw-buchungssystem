@@ -40,8 +40,9 @@ type BookingRequest struct {
 }
 
 type CreateBookingRequest struct {
-	SpaceID string `json:"spaceId" validate:"required"`
+	SpaceID string `json:"spaceId" validate:"required,uuid"`
 	Subject string `json:"subject" validate:"omitempty,max=256"`
+	Comment string `json:"comment" validate:"omitempty,max=1024"`
 	BookingRequest
 }
 
@@ -109,6 +110,7 @@ func (router *BookingRouter) SetupRoutes(s *mux.Router) {
 	s.HandleFunc("/report/presence/", router.getPresenceReport).Methods("GET")
 	s.HandleFunc("/filter/", router.getFiltered).Methods("GET")
 	s.HandleFunc("/current/", router.getCurrent).Methods("GET")
+	s.HandleFunc("/all/", router.getAllForOrg).Methods("GET")
 	s.HandleFunc("/precheck/", router.preBookingCreateCheck).Methods("POST")
 	s.HandleFunc("/{id}/approve", router.approveBooking).Methods("POST")
 	s.HandleFunc("/{id}/ical", router.getIcal).Methods("GET")
@@ -336,6 +338,21 @@ func (router *BookingRouter) getCurrent(w http.ResponseWriter, r *http.Request) 
 	router.sendBookingList(w, list)
 }
 
+func (router *BookingRouter) getAllForOrg(w http.ResponseWriter, r *http.Request) {
+	user, filterUserEmail, filterLocationId, ok := router.validateBookingFilters(w, r)
+	if !ok {
+		return
+	}
+
+	list, err := GetBookingRepository().GetAllUnfilteredByOrg(user.OrganizationID, filterUserEmail, filterLocationId)
+	if err != nil {
+		log.Println(err)
+		SendInternalServerError(w)
+		return
+	}
+	router.sendBookingList(w, list)
+}
+
 func (router *BookingRouter) getIcal(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	e, err := GetBookingRepository().GetOne(vars["id"])
@@ -421,7 +438,40 @@ func (router *BookingRouter) getOne(w http.ResponseWriter, r *http.Request) {
 
 func (router *BookingRouter) getAll(w http.ResponseWriter, r *http.Request) {
 	startTime := time.Now().UTC().Add(time.Hour * -12)
-	list, err := GetBookingRepository().GetAllByUser(GetRequestUserID(r), startTime)
+	userID := GetRequestUserID(r)
+	scope := r.URL.Query().Get("scope")
+
+	var list []*BookingDetails
+	var err error
+
+	if scope == "group" {
+		// Collect all user IDs from the requesting user's groups
+		groups, groupErr := GetGroupRepository().GetAllWhereUserIsMember(userID)
+		if groupErr != nil {
+			log.Println(groupErr)
+			SendInternalServerError(w)
+			return
+		}
+		userIDSet := map[string]bool{userID: true}
+		for _, g := range groups {
+			memberIDs, memberErr := GetGroupRepository().GetMemberUserIDs(g)
+			if memberErr != nil {
+				log.Println(memberErr)
+				continue
+			}
+			for _, mID := range memberIDs {
+				userIDSet[mID] = true
+			}
+		}
+		userIDs := make([]string, 0, len(userIDSet))
+		for id := range userIDSet {
+			userIDs = append(userIDs, id)
+		}
+		list, err = GetBookingRepository().GetAllByUserIDs(userIDs, startTime)
+	} else {
+		list, err = GetBookingRepository().GetAllByUser(userID, startTime)
+	}
+
 	if err != nil {
 		log.Println(err)
 		SendInternalServerError(w)
@@ -487,6 +537,13 @@ func (router *BookingRouter) update(w http.ResponseWriter, r *http.Request) {
 	eNew.CalDavID = e.CalDavID
 	eNew.UserID = e.UserID
 	eNew.Approved = e.Approved
+	// FFW: Wenn Nutzer eigene Buchung korrigiert und Space CorrectionRequiresApproval hat,
+	// muss die Änderung erneut genehmigt werden
+	if e.UserID == requestUser.ID && !CanSpaceAdminOrg(requestUser, location.OrganizationID) {
+		if space.CorrectionRequiresApproval {
+			eNew.Approved = false
+		}
+	}
 	if m.UserEmail != "" {
 		if !CanSpaceAdminOrg(requestUser, location.OrganizationID) {
 			SendForbidden(w)
@@ -530,6 +587,10 @@ func (router *BookingRouter) update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	go router.onBookingUpdated(eNew)
+	// FFW: Wenn Korrektur neue Genehmigung erfordert, Genehmiger benachrichtigen
+	if !eNew.Approved && e.Approved {
+		go router.sendApprovalRequestNotifications(eNew)
+	}
 	SendUpdated(w)
 }
 
@@ -1441,6 +1502,7 @@ func (router *BookingRouter) copyFromRestModel(m *CreateBookingRequest, location
 	e := &Booking{}
 	e.SpaceID = m.SpaceID
 	e.Subject = m.Subject
+	e.Comment = m.Comment
 	e.Enter = m.Enter
 	e.Leave = m.Leave
 	enterNew, err := GetLocationRepository().AttachTimezoneInformation(e.Enter, location)
@@ -1465,6 +1527,7 @@ func (router *BookingRouter) copyToRestModel(e *BookingDetails) *GetBookingRespo
 	m.UserLastname = e.UserLastname
 	m.SpaceID = e.SpaceID
 	m.Subject = e.Subject
+	m.Comment = e.Comment
 	m.Enter, _ = GetLocationRepository().AttachTimezoneInformation(e.Enter, &e.Space.Location)
 	m.Leave, _ = GetLocationRepository().AttachTimezoneInformation(e.Leave, &e.Space.Location)
 	m.Space.ID = e.Space.ID

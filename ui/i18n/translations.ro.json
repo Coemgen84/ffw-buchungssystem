@@ -441,5 +441,10 @@
   "freeFrom": "free from {{time}}",
   "free": "free",
   "close": "Close",
-  "event": "Event"
+  "event": "Event",
+  "desk": "Birou",
+  "room": "Cameră",
+  "vehicle": "Vehicul",
+  "vehicleType": "Tip de vehicul",
+  "licensePlate": "Număr de înmatriculare"
 }

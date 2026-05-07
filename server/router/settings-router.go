@@ -274,6 +274,8 @@ func (router *SettingsRouter) isValidSettingNameReadPublic(name string) bool {
 		name == SettingDailyBasisBooking.Name ||
 		name == SettingNoAdminRestrictions.Name ||
 		name == SettingCustomLogoUrl.Name ||
+		name == SettingCustomLogoTextLine1.Name ||
+		name == SettingCustomLogoTextLine2.Name ||
 		name == SettingDefaultTimezone.Name ||
 		name == SettingDisableBuddies.Name ||
 		name == SettingFeatureRecurringBookings.Name ||
@@ -332,6 +334,8 @@ func (router *SettingsRouter) isValidSettingNameWrite(name string) bool {
 		name == SettingDailyBasisBooking.Name ||
 		name == SettingNoAdminRestrictions.Name ||
 		name == SettingCustomLogoUrl.Name ||
+		name == SettingCustomLogoTextLine1.Name ||
+		name == SettingCustomLogoTextLine2.Name ||
 		name == SettingShowNames.Name ||
 		name == SettingMaxHoursPartiallyBooked.Name ||
 		name == SettingMaxHoursPartiallyBookedEnabled.Name ||
@@ -389,6 +393,12 @@ func (router *SettingsRouter) getSettingType(name string) SettingType {
 	}
 	if name == SettingDefaultTimezone.Name {
 		return SettingDefaultTimezone.Type
+	}
+	if name == SettingCustomLogoTextLine1.Name {
+		return SettingCustomLogoTextLine1.Type
+	}
+	if name == SettingCustomLogoTextLine2.Name {
+		return SettingCustomLogoTextLine2.Type
 	}
 	if name == SettingMaxHoursBeforeDelete.Name {
 		return SettingMaxHoursBeforeDelete.Type

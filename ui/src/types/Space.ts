@@ -17,6 +17,7 @@ export default class Space extends Entity {
   requireSubject: boolean;
   enabled: boolean;
   kioskEnabled: boolean;
+  correctionRequiresApproval: boolean;
   spaceType: string;
   vehicleType: string;
   licensePlate: string;
@@ -42,6 +43,7 @@ export default class Space extends Entity {
     this.requireSubject = false;
     this.enabled = true;
     this.kioskEnabled = false;
+    this.correctionRequiresApproval = false;
     this.spaceType = "desk";
     this.vehicleType = "";
     this.licensePlate = "";
@@ -68,6 +70,7 @@ export default class Space extends Entity {
       requireSubject: this.requireSubject,
       enabled: this.enabled,
       kioskEnabled: this.kioskEnabled,
+      correctionRequiresApproval: this.correctionRequiresApproval,
       spaceType: this.spaceType,
       vehicleType: this.vehicleType,
       licensePlate: this.licensePlate,
@@ -90,6 +93,7 @@ export default class Space extends Entity {
     this.requireSubject = input.requireSubject;
     this.enabled = input.enabled;
     this.kioskEnabled = input.kioskEnabled ?? false;
+    this.correctionRequiresApproval = input.correctionRequiresApproval ?? false;
     this.spaceType = input.spaceType ?? "desk";
     this.vehicleType = input.vehicleType ?? "";
     this.licensePlate = input.licensePlate ?? "";

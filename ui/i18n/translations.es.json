@@ -441,5 +441,10 @@
   "freeFrom": "free from {{time}}",
   "free": "free",
   "close": "Close",
-  "event": "Event"
+  "event": "Event",
+  "desk": "Escritorio",
+  "room": "Sala",
+  "vehicle": "Vehículo",
+  "vehicleType": "Tipo de vehículo",
+  "licensePlate": "Matrícula"
 }

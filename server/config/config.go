@@ -119,10 +119,10 @@ func (c *Config) ReadConfig() {
 	c.InitOrgName = c.getEnv("INIT_ORG_NAME", "Sample Company")
 	c.InitOrgUser = c.getEnv("INIT_ORG_USER", "admin")
 	c.InitOrgPass = c.getEnv("INIT_ORG_PASS", "Sea!surf1ng")
-	c.InitOrgLanguage = c.getEnv("INIT_ORG_LANGUAGE", "en")
+	c.InitOrgLanguage = c.getEnv("INIT_ORG_LANGUAGE", "de")
 	if !c.IsValidLanguageCode(c.InitOrgLanguage) {
-		log.Println("Warning: Invalid INIT_ORG_LANGUAGE set. Defaulting to 'en'.")
-		c.InitOrgLanguage = "en"
+		log.Println("Warning: Invalid INIT_ORG_LANGUAGE set. Defaulting to 'de'.")
+		c.InitOrgLanguage = "de"
 	}
 	c.InitOrgDomain = c.getEnv("INIT_ORG_DOMAIN", "localhost")
 	c.AllowOrgDelete = (c.getEnv("ALLOW_ORG_DELETE", "0") == "1")

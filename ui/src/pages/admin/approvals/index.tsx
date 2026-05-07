@@ -138,6 +138,7 @@ class Approvals extends React.Component<Props, State> {
         <td>{Formatting.getFormatterShort().format(booking.enter)}</td>
         <td>{Formatting.getFormatterShort().format(booking.leave)}</td>
         <td>{booking.subject}</td>
+        <td>{booking.comment}</td>
         <td>
           <Button
             variant="success"
@@ -273,6 +274,7 @@ class Approvals extends React.Component<Props, State> {
               <th>{this.props.t("enter")}</th>
               <th>{this.props.t("leave")}</th>
               <th>{this.props.t("subject")}</th>
+              <th>{this.props.t("comment")}</th>
               <th></th>
               <th></th>
             </tr>

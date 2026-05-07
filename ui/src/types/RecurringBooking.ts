@@ -9,6 +9,7 @@ export default class RecurringBooking extends Entity {
 
   spaceId: string;
   subject: string;
+  comment: string;
   enter: Date;
   leave: Date;
   end: Date;
@@ -20,6 +21,7 @@ export default class RecurringBooking extends Entity {
     super();
     this.spaceId = "";
     this.subject = "";
+    this.comment = "";
     this.enter = new Date();
     this.leave = new Date();
     this.end = new Date();
@@ -40,6 +42,7 @@ export default class RecurringBooking extends Entity {
       end: end.toISOString(),
       spaceId: this.spaceId,
       subject: this.subject,
+      comment: this.comment,
       cadence: this.cadence,
       cycle: this.cycle,
       weekdays: this.weekdays,
@@ -60,6 +63,9 @@ export default class RecurringBooking extends Entity {
     this.cycle = input.cycle || 0;
     if (input.subject) {
       this.subject = input.subject;
+    }
+    if (input.comment) {
+      this.comment = input.comment;
     }
   }
 

@@ -1,6 +1,8 @@
 .mapScrollContainer {
   max-width: 100%;
   overflow-y: scroll;
+  overflow-x: scroll;
+  padding: 12px 0 0 12px;
 }
 
 .space-dragger {

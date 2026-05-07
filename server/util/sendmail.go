@@ -109,7 +109,7 @@ func getOptimalSMTPSettings(config *Config) (port int, startTLS bool, authMethod
 	return port, startTLS, authMethod
 }
 
-const EmailTemplateDefaultLanguage = "en"
+const EmailTemplateDefaultLanguage = "de"
 
 // EmailLogCallback is a function that logs sent emails
 type EmailLogCallback func(subject, recipient, organizationID string) error

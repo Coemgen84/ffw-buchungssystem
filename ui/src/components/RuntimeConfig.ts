@@ -18,6 +18,8 @@ interface RuntimeUserInfos {
   noAdminRestrictions: boolean;
   showNames: boolean;
   customLogoUrl: string;
+  customLogoTextLine1: string;
+  customLogoTextLine2: string;
   defaultTimezone: string;
   disableBuddies: boolean;
   maxHoursPartiallyBooked: number;
@@ -68,6 +70,8 @@ export default class RuntimeConfig {
       noAdminRestrictions: false,
       disableBuddies: false,
       customLogoUrl: "",
+      customLogoTextLine1: "",
+      customLogoTextLine2: "",
       maxHoursPartiallyBooked: 0,
       maxHoursPartiallyBookedEnabled: false,
       showNames: false,
@@ -90,7 +94,7 @@ export default class RuntimeConfig {
       allowRecurringBookings: true,
       subjectDefault: 2,
       use24HourTime: true,
-      dateFormat: "Y-m-d",
+      dateFormat: "d.m.Y",
       totpEnabled: false,
       enforceTOTP: false,
       hasPasskeys: false,
@@ -168,6 +172,10 @@ export default class RuntimeConfig {
             RuntimeConfig.INFOS.disableBuddies = s.value === "1";
           if (s.name === "custom_logo_url")
             RuntimeConfig.INFOS.customLogoUrl = s.value;
+          if (s.name === "custom_logo_text_line1")
+            RuntimeConfig.INFOS.customLogoTextLine1 = s.value;
+          if (s.name === "custom_logo_text_line2")
+            RuntimeConfig.INFOS.customLogoTextLine2 = s.value;
           if (s.name === "default_timezone")
             RuntimeConfig.INFOS.defaultTimezone = s.value;
           if (s.name === "feature_recurring_bookings")

@@ -14,6 +14,7 @@ export default class Booking extends Entity {
   user: User;
   approved: boolean;
   subject: string;
+  comment: string;
   recurringId: string;
 
   constructor() {
@@ -25,6 +26,7 @@ export default class Booking extends Entity {
     this.user = new User();
     this.approved = false;
     this.subject = "";
+    this.comment = "";
     this.recurringId = "";
   }
 
@@ -39,6 +41,7 @@ export default class Booking extends Entity {
         leave: leave.toISOString(),
         spaceId: this.space.id,
         subject: this.subject,
+        comment: this.comment,
         userEmail: this.user.email,
       });
     } else {
@@ -47,6 +50,7 @@ export default class Booking extends Entity {
         leave: leave.toISOString(),
         spaceId: this.space.id,
         subject: this.subject,
+        comment: this.comment,
       });
     }
   }
@@ -79,6 +83,9 @@ export default class Booking extends Entity {
     if (input.subject) {
       this.subject = input.subject;
     }
+    if (input.comment) {
+      this.comment = input.comment;
+    }
     if (input.recurringId) {
       this.recurringId = input.recurringId;
     }
@@ -94,6 +101,12 @@ export default class Booking extends Entity {
 
   async save(): Promise<Booking> {
     return Ajax.saveEntity(this, this.getBackendUrl()).then(() => this);
+  }
+
+  async update(): Promise<Booking> {
+    return Ajax.putData(this.getBackendUrl() + this.id, this.serialize()).then(
+      () => this,
+    );
   }
 
   async delete(): Promise<void> {
@@ -118,8 +131,9 @@ export default class Booking extends Entity {
     });
   }
 
-  static async list(): Promise<Booking[]> {
-    return Ajax.get("/booking/").then((result) => {
+  static async list(scope?: string): Promise<Booking[]> {
+    const params = scope ? `?scope=${encodeURIComponent(scope)}` : "";
+    return Ajax.get(`/booking/${params}`).then((result) => {
       const list: Booking[] = [];
       (result.json as []).forEach((item) => {
         const e: Booking = new Booking();
@@ -173,6 +187,23 @@ export default class Booking extends Entity {
         return list;
       },
     );
+  }
+
+  static async listAll(user: string, location: string): Promise<Booking[]> {
+    const queryParams = new URLSearchParams();
+    if (user) queryParams.set("user", user);
+    if (location) queryParams.set("location", location);
+    const params = queryParams.toString() ? `?${queryParams.toString()}` : "";
+
+    return Ajax.get(`/booking/all/${params}`).then((result) => {
+      const list: Booking[] = [];
+      (result.json as []).forEach((item) => {
+        const e: Booking = new Booking();
+        e.deserialize(item);
+        list.push(e);
+      });
+      return list;
+    });
   }
 
   static async listCurrent(user: string, location: string): Promise<Booking[]> {

@@ -1,4 +1,5 @@
 import React from "react";
+import AppLogo from "@/components/AppLogo";
 import { Form, Button, InputGroup } from "react-bootstrap";
 import { NextRouter } from "next/router";
 import Link from "next/link";
@@ -106,6 +107,13 @@ class Login extends React.Component<Props, State> {
   applyOrg = (res: any) => {
     this.org = new Organization();
     this.org.deserialize(res.json.organization);
+    RuntimeConfig.INFOS.customLogoUrl = (res.json.customLogoUrl || "").trim();
+    RuntimeConfig.INFOS.customLogoTextLine1 = (
+      res.json.customLogoTextLine1 || ""
+    ).trim();
+    RuntimeConfig.INFOS.customLogoTextLine2 = (
+      res.json.customLogoTextLine2 || ""
+    ).trim();
     this.setState(
       {
         providers: res.json.authProviders,
@@ -435,7 +443,7 @@ class Login extends React.Component<Props, State> {
       return (
         <div className="container-signin">
           <Form className="form-signin">
-            <img src="/ui/seatsurfing.svg" alt="FFW-Buchungssystem" className="logo" />
+            <AppLogo className="logo" />
             <h3>Domain not found.</h3>
             <p>
               Please make sure your domain name is set up correctly in
@@ -468,7 +476,7 @@ class Login extends React.Component<Props, State> {
       return (
         <div className="container-signin">
           <Form className="form-signin">
-            <img src="/ui/seatsurfing.svg" alt="FFW-Buchungssystem" className="logo" />
+            <AppLogo className="logo" />
             <h3>{this.org?.name}</h3>
             {providerSelection}
             {buttons}
@@ -493,7 +501,7 @@ class Login extends React.Component<Props, State> {
       return (
         <div className="container-signin">
           <Form className="form-signin">
-            <img src="/ui/seatsurfing.svg" alt="FFW-Buchungssystem" className="logo" />
+            <AppLogo className="logo" />
             <h3>{this.org?.name}</h3>
             <p>
               Password Login is disabled, but no Auth Providers are configured.
@@ -518,7 +526,7 @@ class Login extends React.Component<Props, State> {
             !this.state.requirePasskey || this.state.requirePasswordUpdate
           }
         >
-          <img src="/ui/seatsurfing.svg" alt="FFW-Buchungssystem" className="logo" />
+          <AppLogo className="logo" />
           <h3>{this.org?.name}</h3>
           <p>{this.props.t("passkeyRequired")}</p>
           <Button
@@ -554,7 +562,7 @@ class Login extends React.Component<Props, State> {
           name="totp-login"
           hidden={!this.state.requireTotp}
         >
-          <img src="/ui/seatsurfing.svg" alt="FFW-Buchungssystem" className="logo" />
+          <AppLogo className="logo" />
           <h3>{this.org?.name}</h3>
           <p>{this.props.t("enterTotpCode")}</p>
           <Form.Group>
@@ -592,7 +600,7 @@ class Login extends React.Component<Props, State> {
             !this.state.requirePasswordUpdate
           }
         >
-          <img src="/ui/seatsurfing.svg" alt="FFW-Buchungssystem" className="logo" />
+          <AppLogo className="logo" />
           <h3>{this.org?.name}</h3>
           <p>{this.props.t("passwordUpdateInfo")}</p>
           <Form.Group style={{ marginBottom: "5px" }}>
@@ -662,7 +670,7 @@ class Login extends React.Component<Props, State> {
             this.state.requirePasswordUpdate
           }
         >
-          <img src="/ui/seatsurfing.svg" alt="FFW-Buchungssystem" className="logo" />
+          <AppLogo className="logo" />
           <h3>{this.org?.name}</h3>
           <Form.Group style={{ marginBottom: "5px" }}>
             <Form.Control

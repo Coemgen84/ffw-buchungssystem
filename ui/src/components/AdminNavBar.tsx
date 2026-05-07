@@ -5,6 +5,7 @@ import Link from "next/link";
 import { TranslationFunc, withTranslation } from "./withTranslation";
 import withReadyRouter from "./withReadyRouter";
 import RuntimeConfig from "./RuntimeConfig";
+import AppLogo from "./AppLogo";
 
 interface State {
   search: string;
@@ -59,18 +60,18 @@ class AdminNavBar extends React.Component<Props, State> {
     return (
       <Nav className="admin-navbar navbar navbar-dark sticky-top bg-dark flex-nowrap p-0 shadow">
         <Link
-          className="navbar-brand col-1 col-md-3 col-lg-2 me-0 px-3"
+          className="admin-navbar-brand navbar-brand col-1 col-md-3 col-lg-2 me-0 px-3"
           href="/admin/dashboard"
         >
-          <img
-            src="/ui/seatsurfing_white.svg"
-            alt="FFW-Buchungssystem"
-            className="d-none d-md-block"
+          <AppLogo
+            fallbackSrc="/ui/seatsurfing_white.svg"
+            className="ffw-admin-logo-full d-none d-md-block"
           />
-          <img
-            src="/ui/seatsurfing_white_logo.svg"
-            alt="FFW-Buchungssystem"
-            className="d-block d-md-none"
+          <AppLogo
+            fallbackSrc="/ui/seatsurfing_white_logo.svg"
+            className="ffw-admin-logo-compact d-block d-md-none"
+            textLine1=""
+            textLine2=""
           />
         </Link>
         <Form onSubmit={this.submitSearchForm} className="w-100">

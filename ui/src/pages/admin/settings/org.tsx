@@ -12,7 +12,9 @@ import Link from "next/link";
 import withReadyRouter from "@/components/withReadyRouter";
 import { TranslationFunc, withTranslation } from "@/components/withTranslation";
 import RuntimeConfig from "@/components/RuntimeConfig";
+import AppLogo from "@/components/AppLogo";
 import Organization from "@/types/Organization";
+import Settings from "@/types/Settings";
 import Ajax from "@/util/Ajax";
 import RedirectUtil from "@/util/RedirectUtil";
 
@@ -26,6 +28,9 @@ interface State {
   lastname: string;
   email: string;
   language: string;
+  customLogoUrl: string;
+  customLogoTextLine1: string;
+  customLogoTextLine2: string;
   verifyUuid: string;
   code: string;
 }
@@ -50,6 +55,9 @@ class EditOrg extends React.Component<Props, State> {
       lastname: "",
       email: "",
       language: "de",
+      customLogoUrl: "",
+      customLogoTextLine1: "",
+      customLogoTextLine2: "",
       verifyUuid: "",
       code: "",
     };
@@ -65,17 +73,27 @@ class EditOrg extends React.Component<Props, State> {
 
   loadData = () => {
     const id = RuntimeConfig.INFOS.organizationId;
-    Organization.get(id).then((org) => {
-      this.entity = org;
-      this.setState({
-        name: org.name,
-        firstname: org.contactFirstname,
-        lastname: org.contactLastname,
-        email: org.contactEmail,
-        language: org.language,
-        loading: false,
-      });
-    });
+    Promise.all([
+      Organization.get(id),
+      Settings.getOne("custom_logo_url").catch(() => ""),
+      Settings.getOne("custom_logo_text_line1").catch(() => ""),
+      Settings.getOne("custom_logo_text_line2").catch(() => ""),
+    ]).then(
+      ([org, customLogoUrl, customLogoTextLine1, customLogoTextLine2]) => {
+        this.entity = org;
+        this.setState({
+          name: org.name,
+          firstname: org.contactFirstname,
+          lastname: org.contactLastname,
+          email: org.contactEmail,
+          language: org.language,
+          customLogoUrl: customLogoUrl,
+          customLogoTextLine1: customLogoTextLine1,
+          customLogoTextLine2: customLogoTextLine2,
+          loading: false,
+        });
+      },
+    );
   };
 
   onSubmitVerify = (e: any) => {
@@ -118,8 +136,24 @@ class EditOrg extends React.Component<Props, State> {
     this.entity.contactFirstname = this.state.firstname;
     this.entity.contactLastname = this.state.lastname;
     this.entity.contactEmail = this.state.email;
-    Ajax.saveEntity(this.entity, this.entity.getBackendUrl())
-      .then((res) => {
+    Promise.all([
+      Ajax.saveEntity(this.entity, this.entity.getBackendUrl()),
+      Settings.setOne("custom_logo_url", this.state.customLogoUrl.trim()),
+      Settings.setOne(
+        "custom_logo_text_line1",
+        this.state.customLogoTextLine1.trim(),
+      ),
+      Settings.setOne(
+        "custom_logo_text_line2",
+        this.state.customLogoTextLine2.trim(),
+      ),
+    ])
+      .then(([res]) => {
+        RuntimeConfig.INFOS.customLogoUrl = this.state.customLogoUrl.trim();
+        RuntimeConfig.INFOS.customLogoTextLine1 =
+          this.state.customLogoTextLine1.trim();
+        RuntimeConfig.INFOS.customLogoTextLine2 =
+          this.state.customLogoTextLine2.trim();
         this.setState({
           saved: res.json.verifyUuid ? false : true,
           verifyUuid: res.json.verifyUuid ? res.json.verifyUuid : "",
@@ -223,6 +257,61 @@ class EditOrg extends React.Component<Props, State> {
                   <option key={lc}>{lc}</option>
                 ))}
               </Form.Select>
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2" htmlFor="input-customLogoUrl">
+              {this.props.t("customLogoUrl")}
+            </Form.Label>
+            <Col sm="4">
+              <Form.Control
+                id="input-customLogoUrl"
+                type="url"
+                value={this.state.customLogoUrl}
+                onChange={(e: any) =>
+                  this.setState({ customLogoUrl: e.target.value })
+                }
+                placeholder="https://…"
+              />
+              <Form.Text className="text-muted">
+                {this.props.t("customLogoUrlHint")}
+              </Form.Text>
+              <Form.Control
+                id="input-customLogoTextLine1"
+                className="mt-2"
+                type="text"
+                value={this.state.customLogoTextLine1}
+                onChange={(e: any) =>
+                  this.setState({ customLogoTextLine1: e.target.value })
+                }
+                placeholder={this.props.t("customLogoTextLine1")}
+                maxLength={80}
+              />
+              <Form.Control
+                id="input-customLogoTextLine2"
+                className="mt-2"
+                type="text"
+                value={this.state.customLogoTextLine2}
+                onChange={(e: any) =>
+                  this.setState({ customLogoTextLine2: e.target.value })
+                }
+                placeholder={this.props.t("customLogoTextLine2")}
+                maxLength={120}
+              />
+              <Form.Text className="text-muted">
+                {this.props.t("customLogoTextHint")}
+              </Form.Text>
+              {this.state.customLogoUrl.trim() !== "" && (
+                <div className="mt-2">
+                  <AppLogo
+                    src={this.state.customLogoUrl}
+                    textLine1={this.state.customLogoTextLine1}
+                    textLine2={this.state.customLogoTextLine2}
+                    fallbackSrc="/ui/seatsurfing.svg"
+                    style={{ maxWidth: "260px", maxHeight: "90px" }}
+                  />
+                </div>
+              )}
             </Col>
           </Form.Group>
           <Form.Group as={Row}>

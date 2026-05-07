@@ -35,7 +35,7 @@ interface State {
   start: Date;
   end: Date;
   filterUser: string;
-  filterOption: "enter_leave" | "current" | "today";
+  filterOption: "all" | "enter_leave" | "current" | "today";
   typeaheadOptions: any[];
   typeaheadLoading: boolean;
   filterLocation: string;
@@ -88,11 +88,13 @@ class Bookings extends React.Component<Props, State> {
       end: getDateFromQuery("leave", +7), // default: 7 days in future
       filterUser: this.props.router.query["user"] as string,
       filterOption:
-        this.props.router.query["filter"] === "today"
-          ? "today"
-          : this.props.router.query["filter"] === "enter_leave"
-            ? "enter_leave"
-            : "current",
+        this.props.router.query["filter"] === "all"
+          ? "all"
+          : this.props.router.query["filter"] === "today"
+            ? "today"
+            : this.props.router.query["filter"] === "enter_leave"
+              ? "enter_leave"
+              : "current",
       typeaheadOptions: [],
       typeaheadLoading: false,
       filterLocation: this.props.router.query["location"] as string,
@@ -152,24 +154,26 @@ class Bookings extends React.Component<Props, State> {
     const endOfToday = DateUtil.getTodayEnd();
 
     const bookings =
-      this.state.filterOption === "enter_leave"
-        ? Booking.listFiltered(
-            this.state.start,
-            end,
-            this.state.filterUser,
-            this.state.filterLocation,
-          )
-        : this.state.filterOption === "today"
+      this.state.filterOption === "all"
+        ? Booking.listAll(this.state.filterUser, this.state.filterLocation)
+        : this.state.filterOption === "enter_leave"
           ? Booking.listFiltered(
-              startOfToday,
-              endOfToday,
+              this.state.start,
+              end,
               this.state.filterUser,
               this.state.filterLocation,
             )
-          : Booking.listCurrent(
-              this.state.filterUser,
-              this.state.filterLocation,
-            );
+          : this.state.filterOption === "today"
+            ? Booking.listFiltered(
+                startOfToday,
+                endOfToday,
+                this.state.filterUser,
+                this.state.filterLocation,
+              )
+            : Booking.listCurrent(
+                this.state.filterUser,
+                this.state.filterLocation,
+              );
 
     bookings.then((list) => {
       this.data = list;
@@ -177,7 +181,8 @@ class Bookings extends React.Component<Props, State> {
       this.updateUrlParams(
         DateUtil.formatToDateTimeString(this.state.start),
         DateUtil.formatToDateTimeString(this.state.end),
-        this.state.filterOption === "enter_leave" ||
+        this.state.filterOption === "all" ||
+          this.state.filterOption === "enter_leave" ||
           this.state.filterOption === "today"
           ? this.state.filterOption
           : null,
@@ -264,6 +269,7 @@ class Bookings extends React.Component<Props, State> {
         <td>{Formatting.getFormatterShort().format(booking.enter)}</td>
         <td>{Formatting.getFormatterShort().format(booking.leave)}</td>
         <td>{booking.subject}</td>
+        <td>{booking.comment}</td>
         <td>
           <Button
             variant="danger"
@@ -377,6 +383,15 @@ class Bookings extends React.Component<Props, State> {
               value="option2"
               checked={this.state.filterOption === "current"}
               onChange={(e) => this.setState({ filterOption: "current" })}
+            />
+            <Form.Check
+              type="radio"
+              label={this.props.t("all")}
+              name="radioGroup"
+              id="radioAll"
+              value="option4"
+              checked={this.state.filterOption === "all"}
+              onChange={(e) => this.setState({ filterOption: "all" })}
             />
             <Form.Check
               type="radio"
@@ -533,6 +548,7 @@ class Bookings extends React.Component<Props, State> {
               <th>{this.props.t("enter")}</th>
               <th>{this.props.t("leave")}</th>
               <th>{this.props.t("subject")}</th>
+              <th>{this.props.t("comment")}</th>
               <th></th>
             </tr>
           </thead>

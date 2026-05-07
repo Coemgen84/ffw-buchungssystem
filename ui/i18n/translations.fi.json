@@ -439,5 +439,10 @@
   "freeFrom": "free from {{time}}",
   "free": "free",
   "close": "Close",
-  "event": "Event"
+  "event": "Event",
+  "desk": "Työpiste",
+  "room": "Huone",
+  "vehicle": "Ajoneuvo",
+  "vehicleType": "Ajoneuvotyyppi",
+  "licensePlate": "Rekisterinumero"
 }

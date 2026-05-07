@@ -105,6 +105,7 @@ interface State {
   activeTabFilterModal: string;
   createdBookingId: string;
   subject: string;
+  comment: string;
   showRecurringOptions: boolean;
   cancelSeries: boolean;
   recurrence: {
@@ -201,6 +202,7 @@ class Search extends React.Component<Props, State> {
       activeTabFilterModal: "tab-filter-area",
       createdBookingId: "",
       subject: "",
+      comment: "",
       showRecurringOptions: false,
       cancelSeries: false,
       recurrence: {
@@ -886,6 +888,10 @@ class Search extends React.Component<Props, State> {
             {this.props.t("subject")}: {booking.subject}
             <br />
           </span>
+          <span hidden={!booking.comment}>
+            {this.props.t("comment")}: {booking.comment}
+            <br />
+          </span>
           <span hidden={!booking.user.email}>
             {this.props.t("user")}: {booking.user.email}
             <br />
@@ -933,6 +939,7 @@ class Search extends React.Component<Props, State> {
     if (this.state.recurrence.active) {
       booking = new RecurringBooking();
       booking.subject = this.state.subject;
+      booking.comment = this.state.comment;
       booking.enter = new Date(this.state.enter);
       booking.leave = new Date(this.state.leave);
       if (!RuntimeConfig.INFOS.dailyBasisBooking) {
@@ -946,6 +953,7 @@ class Search extends React.Component<Props, State> {
     } else {
       booking = new Booking();
       booking.subject = this.state.subject;
+      booking.comment = this.state.comment;
       booking.enter = new Date(this.state.enter);
       booking.leave = new Date(this.state.leave);
       if (!RuntimeConfig.INFOS.dailyBasisBooking) {
@@ -962,6 +970,7 @@ class Search extends React.Component<Props, State> {
           showConfirm: false,
           showSuccess: true,
           subject: "",
+          comment: "",
         });
       })
       .catch((e: any) => {
@@ -1449,6 +1458,7 @@ class Search extends React.Component<Props, State> {
     const rb = new RecurringBooking();
     rb.spaceId = this.state.selectedSpace?.id || "";
     rb.subject = this.state.subject;
+    rb.comment = this.state.comment;
     rb.enter = new Date(this.state.enter);
     rb.leave = new Date(this.state.leave);
     rb.end = new Date(this.state.recurrence.end);
@@ -1712,8 +1722,7 @@ class Search extends React.Component<Props, State> {
       });
       listOrMap = (
         <div
-          className="h-100 w-100 position-absolute bg-body-secondary"
-          style={{ position: "relative" }}
+          className="h-100 w-100 position-absolute bg-body-secondary search-map-container"
         >
           <TransformWrapper
             ref={this.transformWrapperRef}
@@ -1725,16 +1734,7 @@ class Search extends React.Component<Props, State> {
               <>
                 {window.innerWidth >= 768 && (
                   <div
-                    style={{
-                      position: "absolute",
-                      top: 70,
-                      right: 10,
-                      zIndex: 10,
-                      border: "1px solid #ccc",
-                      background: "#fff",
-                      borderRadius: "5px",
-                      overflow: "hidden",
-                    }}
+                    className="search-minimap"
                   >
                     <MiniMap>
                       <div style={floorPlanStyle}></div>
@@ -1742,15 +1742,7 @@ class Search extends React.Component<Props, State> {
                   </div>
                 )}
                 <div
-                  style={{
-                    position: "absolute",
-                    top: 70,
-                    left: 10,
-                    zIndex: 10,
-                    border: "1px solid #ccc",
-                    background: "#fff",
-                    borderRadius: "5px",
-                  }}
+                  className="search-zoom-controls"
                 >
                   <button
                     onClick={() => zoomIn()}
@@ -2241,6 +2233,26 @@ class Search extends React.Component<Props, State> {
                 />
               </Col>
             </Form.Group>
+            <Form.Group
+              as={Row}
+              style={{ marginTop: "25px" }}
+            >
+              <Form.Label column sm="4" htmlFor="comment">
+                {this.props.t("commentOptional")}:
+              </Form.Label>
+              <Col sm="8">
+                <Form.Control
+                  as="textarea"
+                  rows={2}
+                  id="comment"
+                  placeholder={this.props.t("commentOptional")}
+                  value={this.state.comment}
+                  onChange={(e: any) =>
+                    this.setState({ comment: e.target.value })
+                  }
+                />
+              </Col>
+            </Form.Group>
           </Modal.Body>
           <Modal.Body
             hidden={
@@ -2488,6 +2500,14 @@ class Search extends React.Component<Props, State> {
           >
             <IconCalendar className="feather" style={{ marginRight: "5px" }} />{" "}
             {this.props.t("event")}
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() =>
+              this.props.router.push("/bookings?edit=" + myBooking.id)
+            }
+          >
+            {this.props.t("editBooking")}
           </Button>
           <Button
             variant="danger"

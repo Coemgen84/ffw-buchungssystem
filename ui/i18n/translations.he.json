@@ -441,5 +441,10 @@
   "freeFrom": "free from {{time}}",
   "free": "free",
   "close": "Close",
-  "event": "Event"
+  "event": "Event",
+  "desk": "שולחן",
+  "room": "חדר",
+  "vehicle": "רכב",
+  "vehicleType": "סוג רכב",
+  "licensePlate": "לוחית רישוי"
 }

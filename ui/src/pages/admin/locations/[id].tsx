@@ -61,6 +61,7 @@ interface SpaceState {
   requireSubject: boolean;
   enabled: boolean;
   kioskEnabled: boolean;
+  correctionRequiresApproval: boolean;
   spaceType: string;
   vehicleType: string;
   licensePlate: string;
@@ -277,6 +278,7 @@ class EditLocation extends React.Component<Props, State> {
         space.requireSubject = item.requireSubject;
         space.enabled = item.enabled;
         space.kioskEnabled = item.kioskEnabled;
+        space.correctionRequiresApproval = item.correctionRequiresApproval;
         space.attributes = [];
         item.enabledAttributes.forEach((attributeId) => {
           let value = item.attributes.get(attributeId);
@@ -456,6 +458,7 @@ class EditLocation extends React.Component<Props, State> {
         : RuntimeConfig.INFOS.subjectDefault === 3,
       enabled: e ? e.enabled : true,
       kioskEnabled: e ? e.kioskEnabled : false,
+      correctionRequiresApproval: e ? e.correctionRequiresApproval : false,
       spaceType: e ? e.spaceType : "desk",
       vehicleType: e ? e.vehicleType : "",
       licensePlate: e ? e.licensePlate : "",
@@ -1090,6 +1093,28 @@ class EditLocation extends React.Component<Props, State> {
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
+              <Form.Label column sm="4" htmlFor="space-correction-requires-approval">
+                {this.props.t("correctionRequiresApproval")}
+              </Form.Label>
+              <Col sm="8">
+                <Form.Check
+                  type="checkbox"
+                  id="space-correction-requires-approval"
+                  label={this.props.t("yes")}
+                  checked={this.getSelectedSpace()?.correctionRequiresApproval}
+                  onChange={(e: any) => {
+                    const spaces = this.state.spaces;
+                    const idx = this.state.selectedSpace!;
+                    const space = { ...spaces[idx] };
+                    space.correctionRequiresApproval = e.target.checked;
+                    space.changed = true;
+                    spaces[idx] = space;
+                    this.setState({ spaces: spaces, changed: true });
+                  }}
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
               <Form.Label column sm="4" htmlFor="space-type">
                 {this.props.t("type")}
               </Form.Label>
@@ -1108,6 +1133,7 @@ class EditLocation extends React.Component<Props, State> {
                   }}
                 >
                   <option value="desk">{this.props.t("desk")}</option>
+                  <option value="room">{this.props.t("room")}</option>
                   <option value="vehicle">{this.props.t("vehicle")}</option>
                 </Form.Select>
               </Col>

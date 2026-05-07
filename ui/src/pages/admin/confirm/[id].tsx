@@ -1,4 +1,5 @@
 import React from "react";
+import AppLogo from "@/components/AppLogo";
 import { Loader as IconLoad } from "react-feather";
 import { NextRouter } from "next/router";
 import Link from "next/link";
@@ -88,7 +89,7 @@ class ConfirmSignup extends React.Component<Props, State> {
     return (
       <div className="container-center">
         <div className="container-center-inner">
-          <img src="/ui/seatsurfing.svg" alt="FFW-Buchungssystem" className="logo" />
+          <AppLogo className="logo" />
           {loading}
           {result}
         </div>

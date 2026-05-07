@@ -1,4 +1,5 @@
 import React from "react";
+import AppLogo from "@/components/AppLogo";
 import { Button, Form } from "react-bootstrap";
 import Link from "next/link";
 import { TranslationFunc, withTranslation } from "@/components/withTranslation";
@@ -107,7 +108,7 @@ class InitPasswordReset extends React.Component<Props, State> {
           className="container-center-inner"
           onSubmit={this.onPasswordSubmit}
         >
-          <img src="/ui/seatsurfing.svg" alt="FFW-Buchungssystem" className="logo" />
+          <AppLogo className="logo" />
           {this.renderContent()}
           <p className="margin-top-50">
             <Link href="/login">{this.props.t("back")}</Link>

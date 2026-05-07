@@ -49,6 +49,8 @@ var (
 	SettingDailyBasisBooking              SettingName = SettingName{Name: "daily_basis_booking", Type: SettingTypeBool}
 	SettingNoAdminRestrictions            SettingName = SettingName{Name: "no_admin_restrictions", Type: SettingTypeBool}
 	SettingCustomLogoUrl                  SettingName = SettingName{Name: "custom_logo_url", Type: SettingTypeString}
+	SettingCustomLogoTextLine1            SettingName = SettingName{Name: "custom_logo_text_line1", Type: SettingTypeString}
+	SettingCustomLogoTextLine2            SettingName = SettingName{Name: "custom_logo_text_line2", Type: SettingTypeString}
 	SettingShowNames                      SettingName = SettingName{Name: "show_names", Type: SettingTypeBool}
 	SettingAllowBookingsNonExistingUsers  SettingName = SettingName{Name: "allow_booking_nonexist_users", Type: SettingTypeBool}
 	SettingDisableBuddies                 SettingName = SettingName{Name: "disable_buddies", Type: SettingTypeBool}
@@ -273,6 +275,8 @@ func (r *SettingsRepository) InitDefaultSettingsForOrg(organizationID string) er
 		"($1, '"+SettingDailyBasisBooking.Name+"', '0'), "+
 		"($1, '"+SettingNoAdminRestrictions.Name+"', '0'), "+
 		"($1, '"+SettingCustomLogoUrl.Name+"', ''), "+
+		"($1, '"+SettingCustomLogoTextLine1.Name+"', ''), "+
+		"($1, '"+SettingCustomLogoTextLine2.Name+"', ''), "+
 		"($1, '"+SettingShowNames.Name+"', '0'), "+
 		"($1, '"+SettingAllowBookingsNonExistingUsers.Name+"', '0'), "+
 		"($1, '"+SettingDisableBuddies.Name+"', '0'), "+

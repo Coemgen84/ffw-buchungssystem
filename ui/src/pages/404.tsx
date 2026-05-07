@@ -1,4 +1,5 @@
 import React from "react";
+import AppLogo from "@/components/AppLogo";
 import { TranslationFunc, withTranslation } from "@/components/withTranslation";
 
 interface Props {
@@ -14,7 +15,7 @@ class Error404 extends React.Component<Props> {
     return (
       <div className="container-center">
         <div className="container-center-inner">
-          <img src="/ui/seatsurfing.svg" alt="FFW-Buchungssystem" className="logo" />
+          <AppLogo className="logo" />
           <p>
             <a href="/ui/">{this.props.t("error404")}</a>
           </p>

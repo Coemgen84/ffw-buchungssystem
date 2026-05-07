@@ -24,6 +24,7 @@ import Link from "next/link";
 import Loading from "@/components/Loading";
 import withReadyRouter from "@/components/withReadyRouter";
 import RuntimeConfig from "@/components/RuntimeConfig";
+import AppLogo from "@/components/AppLogo";
 import { TranslationFunc, withTranslation } from "@/components/withTranslation";
 import PremiumFeatureIcon from "@/components/PremiumFeatureIcon";
 import CloudFeatureHint from "@/components/CloudFeatureHint";
@@ -43,6 +44,8 @@ interface State {
   defaultTimezone: string;
   confluenceServerSharedSecret: string;
   customLogoUrl: string;
+  customLogoTextLine1: string;
+  customLogoTextLine2: string;
   maxBookingsPerUser: number;
   maxConcurrentBookingsPerUser: number;
   maxDaysInAdvance: number;
@@ -99,6 +102,8 @@ class Settings extends React.Component<Props, State> {
       defaultTimezone: "",
       confluenceServerSharedSecret: "",
       customLogoUrl: "",
+      customLogoTextLine1: "",
+      customLogoTextLine2: "",
       maxBookingsPerUser: 0,
       maxConcurrentBookingsPerUser: 0,
       maxBookingDurationHours: 0,
@@ -210,6 +215,10 @@ class Settings extends React.Component<Props, State> {
         if (s.name === "confluence_server_shared_secret")
           state.confluenceServerSharedSecret = s.value;
         if (s.name === "custom_logo_url") state.customLogoUrl = s.value;
+        if (s.name === "custom_logo_text_line1")
+          state.customLogoTextLine1 = s.value;
+        if (s.name === "custom_logo_text_line2")
+          state.customLogoTextLine2 = s.value;
         if (s.name === "max_bookings_per_user")
           state.maxBookingsPerUser = window.parseInt(s.value);
         if (s.name === "max_concurrent_bookings_per_user")
@@ -310,7 +319,15 @@ class Settings extends React.Component<Props, State> {
         "confluence_server_shared_secret",
         this.state.confluenceServerSharedSecret,
       ),
-      new OrgSettings("custom_logo_url", this.state.customLogoUrl),
+      new OrgSettings("custom_logo_url", this.state.customLogoUrl.trim()),
+      new OrgSettings(
+        "custom_logo_text_line1",
+        this.state.customLogoTextLine1.trim(),
+      ),
+      new OrgSettings(
+        "custom_logo_text_line2",
+        this.state.customLogoTextLine2.trim(),
+      ),
       new OrgSettings(
         "daily_basis_booking",
         this.state.dailyBasisBooking ? "1" : "0",
@@ -796,6 +813,42 @@ class Settings extends React.Component<Props, State> {
               <Form.Text className="text-muted">
                 {this.props.t("customLogoUrlHint")}
               </Form.Text>
+              <Form.Control
+                id="input-customLogoTextLine1"
+                className="mt-2"
+                type="text"
+                value={this.state.customLogoTextLine1}
+                onChange={(e: any) =>
+                  this.setState({ customLogoTextLine1: e.target.value })
+                }
+                placeholder={this.props.t("customLogoTextLine1")}
+                maxLength={80}
+              />
+              <Form.Control
+                id="input-customLogoTextLine2"
+                className="mt-2"
+                type="text"
+                value={this.state.customLogoTextLine2}
+                onChange={(e: any) =>
+                  this.setState({ customLogoTextLine2: e.target.value })
+                }
+                placeholder={this.props.t("customLogoTextLine2")}
+                maxLength={120}
+              />
+              <Form.Text className="text-muted">
+                {this.props.t("customLogoTextHint")}
+              </Form.Text>
+              {this.state.customLogoUrl.trim() !== "" && (
+                <div className="mt-2">
+                  <AppLogo
+                    src={this.state.customLogoUrl}
+                    textLine1={this.state.customLogoTextLine1}
+                    textLine2={this.state.customLogoTextLine2}
+                    fallbackSrc="/ui/seatsurfing.svg"
+                    style={{ maxWidth: "260px", maxHeight: "90px" }}
+                  />
+                </div>
+              )}
             </Col>
           </Form.Group>
           <Form.Group as={Row}>

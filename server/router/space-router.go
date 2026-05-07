@@ -32,8 +32,9 @@ type CreateSpaceRequest struct {
 	SpaceType             string                       `json:"spaceType"`
 	VehicleType           string                       `json:"vehicleType"`
 	LicensePlate          string                       `json:"licensePlate"`
-	Capacity              uint                         `json:"capacity"`
-	Attributes            []SpaceAttributeValueRequest `json:"attributes"`
+	Capacity                  uint                         `json:"capacity"`
+	CorrectionRequiresApproval bool                         `json:"correctionRequiresApproval"`
+	Attributes                []SpaceAttributeValueRequest `json:"attributes"`
 	ApproverGroupIDs      []string                     `json:"approverGroupIds"`
 	AllowedBookerGroupIDs []string                     `json:"allowedBookerGroupIds"`
 }
@@ -275,6 +276,7 @@ func (router *SpaceRouter) _getAvailability(spaceID string, w http.ResponseWrite
 			m.RequireSubject = e.RequireSubject
 			m.Enabled = e.Enabled
 			m.Available = e.Available
+			m.CorrectionRequiresApproval = e.CorrectionRequiresApproval
 			m.IsAllowed = isAllowedToBookLocation && router.IsUserAllowedToBookSpace(&e.Space, spaceAllowedBookers, userGroups)
 			m.IsApprovalRequired = router.IsApprovalRequired(&e.Space, approvers)
 			router.appendAttributesToRestModel(&m.GetSpaceResponse, attributeValues)
@@ -933,6 +935,7 @@ func (router *SpaceRouter) copyFromRestModel(m *CreateSpaceRequest) *Space {
 	e.RequireSubject = m.RequireSubject
 	e.Enabled = m.Enabled
 	e.KioskEnabled = m.KioskEnabled
+	e.CorrectionRequiresApproval = m.CorrectionRequiresApproval
 	e.SpaceType = m.SpaceType
 	e.VehicleType = m.VehicleType
 	e.LicensePlate = m.LicensePlate
@@ -953,6 +956,7 @@ func (router *SpaceRouter) copyToRestModel(e *Space, attributes []*SpaceAttribut
 	m.RequireSubject = e.RequireSubject
 	m.Enabled = e.Enabled
 	m.KioskEnabled = e.KioskEnabled
+	m.CorrectionRequiresApproval = e.CorrectionRequiresApproval
 	if attributes != nil {
 		m.Attributes = []SpaceAttributeValueRequest{}
 		for _, attribute := range attributes {

@@ -144,7 +144,7 @@ func (r *UserPreferencesRepository) InitDefaultSettingsForUser(userID string) er
 		"($1, '"+PreferenceEnterTime.Name+"', '"+strconv.Itoa(PreferenceEnterTimeNow)+"'), "+
 		"($1, '"+PreferenceWorkdayStart.Name+"', '9'), "+
 		"($1, '"+PreferenceWorkdayEnd.Name+"', '17'), "+
-		"($1, '"+PreferenceWorkdays.Name+"', '1,2,3,4,5'), "+
+		"($1, '"+PreferenceWorkdays.Name+"', '0,1,2,3,4,5,6'), "+
 		"($1, '"+PreferenceLocation.Name+"', ''), "+
 		"($1, '"+PreferenceBookedColor.Name+"', '#ff453a'), "+
 		"($1, '"+PreferenceNotBookedColor.Name+"', '#30d158'), "+
@@ -154,7 +154,7 @@ func (r *UserPreferencesRepository) InitDefaultSettingsForUser(userID string) er
 		"($1, '"+PreferenceDisallowedColor.Name+"', '#eeeeee'), "+
 		"($1, '"+PreferenceApprovalNotifications.Name+"', '0'), "+
 		"($1, '"+Preference24HourTime.Name+"', '1'), "+
-		"($1, '"+PreferenceDateFormat.Name+"', 'Y-m-d') "+
+		"($1, '"+PreferenceDateFormat.Name+"', 'd.m.Y') "+
 		"ON CONFLICT (user_id, name) DO NOTHING",
 		userID)
 	return err

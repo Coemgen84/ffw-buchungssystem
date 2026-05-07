@@ -118,6 +118,9 @@ type AuthPreflightResponse struct {
 	RequirePassword      bool                             `json:"requirePassword"`
 	DisablePasswordLogin bool                             `json:"disablePasswordLogin"`
 	Domain               string                           `json:"domain"`
+	CustomLogoUrl        string                           `json:"customLogoUrl"`
+	CustomLogoTextLine1  string                           `json:"customLogoTextLine1"`
+	CustomLogoTextLine2  string                           `json:"customLogoTextLine2"`
 }
 
 type AuthPasswordRequest struct {
@@ -1265,6 +1268,18 @@ func (router *AuthRouter) getPreflightResponseForOrg(org *Organization) *AuthPre
 	domain, err := GetOrganizationRepository().GetPrimaryDomain(org)
 	if domain != nil && err == nil {
 		res.Domain = domain.DomainName
+	}
+	customLogoUrl, err := GetSettingsRepository().Get(org.ID, SettingCustomLogoUrl.Name)
+	if err == nil {
+		res.CustomLogoUrl = customLogoUrl
+	}
+	customLogoTextLine1, err := GetSettingsRepository().Get(org.ID, SettingCustomLogoTextLine1.Name)
+	if err == nil {
+		res.CustomLogoTextLine1 = customLogoTextLine1
+	}
+	customLogoTextLine2, err := GetSettingsRepository().Get(org.ID, SettingCustomLogoTextLine2.Name)
+	if err == nil {
+		res.CustomLogoTextLine2 = customLogoTextLine2
 	}
 	for _, e := range list {
 		m := &GetAuthProviderPublicResponse{}

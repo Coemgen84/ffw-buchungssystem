@@ -1,7 +1,7 @@
 import RuntimeConfig from "@/components/RuntimeConfig";
 
 export default class Formatting {
-  static Language: string = "en";
+  static Language: string = "de";
   static t: (key: string, view?: object) => any;
 
   static tbool(s: string) {

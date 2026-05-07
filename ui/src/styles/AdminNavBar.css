@@ -3,6 +3,31 @@
   min-width: 50px;
 }
 
+@media (min-width: 768px) {
+  .admin-navbar .admin-navbar-brand {
+    width: auto !important;
+    flex: 0 0 auto !important;
+    max-width: none !important;
+    min-width: var(--sidebar-width-expanded);
+  }
+
+  .admin-navbar .admin-navbar-brand .ffw-admin-logo-full > span {
+    justify-content: flex-start !important;
+    gap: 0.5rem !important;
+    max-width: none !important;
+  }
+
+  .admin-navbar .admin-navbar-brand .ffw-admin-logo-full img {
+    max-width: 72px !important;
+    max-height: 42px !important;
+  }
+}
+
+.admin-navbar .ffw-admin-logo-compact {
+  height: 30px;
+  width: auto;
+}
+
 .admin-navbar .navbar-brand > img {
   height: 30px;
 }

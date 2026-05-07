@@ -58,6 +58,7 @@ interface State {
   prefLocationId: string;
   selfEmail: string;
   subject: string;
+  comment: string;
   typeaheadOptions: any[];
   typeaheadLoading: boolean;
   typeaheadSelected: [{ email: string }];
@@ -127,6 +128,7 @@ class EditBooking extends React.Component<Props, State> {
       prefLocationId: "",
       selfEmail: "",
       subject: "",
+      comment: "",
       typeaheadOptions: [],
       typeaheadLoading: false,
       typeaheadSelected: [{ email: "" }],
@@ -169,6 +171,7 @@ class EditBooking extends React.Component<Props, State> {
             canSave: canSave,
             canEdit: canSave,
             subject: this.entity.subject,
+            comment: this.entity.comment,
             // loading: false,
             typeaheadSelected: this.entity.user.email
               ? [{ email: this.entity.user.email }]
@@ -374,11 +377,11 @@ class EditBooking extends React.Component<Props, State> {
     if (this.dailyBasisBooking) {
       let enter = new Date();
       enter = this.state.enter;
-      enter.setHours(0, 0, 0, 0);
+      // Do not force time to 00:00 for admin edits
 
       let leave = new Date();
       leave = this.state.leave;
-      leave.setHours(23, 59, 59, 0);
+      // Do not force time to 23:59 for admin edits
 
       this.setState({
         enter: enter,
@@ -407,6 +410,7 @@ class EditBooking extends React.Component<Props, State> {
       this.entity.space.id = this.state.selectedSpaceId;
       this.entity.user.email = user;
       this.entity.subject = this.state.subject;
+      this.entity.comment = this.state.comment;
       this.entity
         .save()
         .then(() => {
@@ -440,6 +444,7 @@ class EditBooking extends React.Component<Props, State> {
       this.entity.space.id = this.state.selectedSpaceId;
       this.entity.user.email = this.state.selectedUserEmail;
       this.entity.subject = this.state.subject;
+      this.entity.comment = this.state.comment;
       this.entity
         .save()
         .then(() => {
@@ -565,11 +570,15 @@ class EditBooking extends React.Component<Props, State> {
       if (enter == null) {
         return;
       }
-      const leave = new Date(enter);
-      leave.setHours(leave.getHours() + 1);
+      let leave: Date;
+      if (this.state.leave > enter) {
+        leave = new Date(this.state.leave);
+      } else {
+        leave = new Date(enter);
+        leave.setHours(leave.getHours() + 1);
+      }
       if (this.dailyBasisBooking) {
-        enter.setHours(0, 0, 0);
-        leave.setHours(23, 59, 59);
+        // Keep admin-selected times, do not force 00:00 / 23:59
       }
       this.setState(
         {
@@ -614,7 +623,7 @@ class EditBooking extends React.Component<Props, State> {
         return;
       }
       if (this.dailyBasisBooking) {
-        date.setHours(23, 59, 59);
+        // Keep admin-selected times, do not force 23:59
       }
       this.setState(
         {
@@ -714,7 +723,7 @@ class EditBooking extends React.Component<Props, State> {
         }}
         required={true}
         disabled={!this.state.canEdit}
-        enableTime={!this.dailyBasisBooking}
+        enableTime={true}
       />
     );
     const leaveDatePicker = (
@@ -726,7 +735,7 @@ class EditBooking extends React.Component<Props, State> {
         }}
         required={true}
         disabled={!this.state.canEdit}
-        enableTime={!this.dailyBasisBooking}
+        enableTime={true}
       />
     );
 
@@ -996,6 +1005,24 @@ class EditBooking extends React.Component<Props, State> {
                   this.setState({ subject: e.target.value })
                 }
                 required={this.getSelectedSpace()?.requireSubject}
+              />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row}>
+            <Form.Label column sm="2" htmlFor="booking-comment">
+              {this.props.t("comment")}
+            </Form.Label>
+            <Col sm="4">
+              <Form.Control
+                as="textarea"
+                id="booking-comment"
+                value={this.state.comment}
+                disabled={!this.state.canEdit}
+                onChange={(e: any) =>
+                  this.setState({ comment: e.target.value })
+                }
+                maxLength={1024}
               />
             </Col>
           </Form.Group>

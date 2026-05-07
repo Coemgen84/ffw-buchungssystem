@@ -441,5 +441,10 @@
   "freeFrom": "free from {{time}}",
   "free": "free",
   "close": "Close",
-  "event": "Event"
+  "event": "Event",
+  "desk": "Bureau",
+  "room": "Salle",
+  "vehicle": "Véhicule",
+  "vehicleType": "Type de véhicule",
+  "licensePlate": "Plaque d'immatriculation"
 }

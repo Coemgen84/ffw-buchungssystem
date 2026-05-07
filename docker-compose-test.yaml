@@ -1,0 +1,42 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      CRYPT_KEY: nWAEpb6pqnCElz7za9HtYIk/rx4iPPS/
+      FRONTEND_URL: http://100.65.178.46:8083
+      POSTGRES_URL: postgres://seatsurfing:seatsurfing@db:5432/seatsurfing?sslmode=disable
+      PUBLIC_SCHEME: http
+      PUBLIC_URL: http://100.65.178.46:8083
+    networks:
+      - ffw-test
+    ports:
+      - 8083:8080
+    restart: always
+  db:
+    environment:
+      POSTGRES_DB: seatsurfing
+      POSTGRES_PASSWORD: seatsurfing
+      POSTGRES_USER: seatsurfing
+    healthcheck:
+      interval: 5s
+      retries: 5
+      test:
+        - CMD-SHELL
+        - pg_isready -U seatsurfing
+      timeout: 5s
+    image: postgres:17
+    networks:
+      - ffw-test
+    restart: always
+    volumes:
+      - db-test:/var/lib/postgresql/data
+networks:
+  ffw-test:
+    driver: bridge
+volumes:
+  db-test: null

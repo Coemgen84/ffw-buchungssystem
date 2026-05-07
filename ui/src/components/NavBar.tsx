@@ -10,6 +10,7 @@ import {
   NavLink,
 } from "react-bootstrap";
 import RuntimeConfig from "./RuntimeConfig";
+import AppLogo from "./AppLogo";
 import {
   Users as IconMerge,
   Bell as IconAlert,
@@ -239,8 +240,6 @@ class NavBar extends React.Component<Props, State> {
       );
     }
 
-    const logoUrl = RuntimeConfig.INFOS.customLogoUrl || "/ui/seatsurfing.svg";
-
     return (
       <>
         <Navbar
@@ -248,10 +247,15 @@ class NavBar extends React.Component<Props, State> {
           variant="light"
           fixed="top"
           expand={RuntimeConfig.EMBEDDED ? true : "lg"}
+          className="ffw-main-navbar"
         >
           <Container fluid={true}>
-            <Navbar.Brand as={NavLink} to="/search">
-              <img src={logoUrl} alt="FFW-Buchungssystem" />
+            <Navbar.Brand
+              as={NavLink}
+              to="/search"
+              className="ffw-main-navbar-brand"
+            >
+              <AppLogo />
             </Navbar.Brand>
             {collapsable}
           </Container>

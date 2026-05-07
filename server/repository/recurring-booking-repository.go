@@ -29,6 +29,7 @@ type RecurringBooking struct {
 	Enter   time.Time
 	Leave   time.Time
 	Subject string
+	Comment string
 	Cadence Cadence
 	Details interface{}
 	End     time.Time
@@ -72,7 +73,12 @@ func GetRecurringBookingRepository() *RecurringBookingRepository {
 }
 
 func (r *RecurringBookingRepository) RunSchemaUpgrade(curVersion, targetVersion int) {
-	// Nothing to do for now
+	if curVersion < 44 {
+		if _, err := GetDatabase().DB().Exec("ALTER TABLE recurring_bookings " +
+			"ADD COLUMN IF NOT EXISTS comment VARCHAR NOT NULL DEFAULT ''"); err != nil {
+			panic(err)
+		}
+	}
 }
 
 func (r *RecurringBookingRepository) Create(e *RecurringBooking) error {
@@ -82,10 +88,10 @@ func (r *RecurringBookingRepository) Create(e *RecurringBooking) error {
 		return err
 	}
 	err = GetDatabase().DB().QueryRow("INSERT INTO recurring_bookings "+
-		"(user_id, space_id, enter_time, leave_time, subject, cadence, details, end_date) "+
-		"VALUES ($1, $2, $3, $4, $5, $6, $7, $8) "+
+		"(user_id, space_id, enter_time, leave_time, subject, comment, cadence, details, end_date) "+
+		"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) "+
 		"RETURNING id",
-		e.UserID, e.SpaceID, e.Enter, e.Leave, e.Subject, e.Cadence, details, e.End).Scan(&id)
+		e.UserID, e.SpaceID, e.Enter, e.Leave, e.Subject, e.Comment, e.Cadence, details, e.End).Scan(&id)
 	if err != nil {
 		return err
 	}
@@ -96,10 +102,10 @@ func (r *RecurringBookingRepository) Create(e *RecurringBooking) error {
 func (r *RecurringBookingRepository) GetOne(id string) (*RecurringBooking, error) {
 	e := &RecurringBooking{}
 	var details []byte
-	err := GetDatabase().DB().QueryRow("SELECT id, user_id, space_id, enter_time, leave_time, subject, cadence, details, end_date "+
+	err := GetDatabase().DB().QueryRow("SELECT id, user_id, space_id, enter_time, leave_time, subject, comment, cadence, details, end_date "+
 		"FROM recurring_bookings "+
 		"WHERE id = $1",
-		id).Scan(&e.ID, &e.UserID, &e.SpaceID, &e.Enter, &e.Leave, &e.Subject, &e.Cadence, &details, &e.End)
+		id).Scan(&e.ID, &e.UserID, &e.SpaceID, &e.Enter, &e.Leave, &e.Subject, &e.Comment, &e.Cadence, &details, &e.End)
 	if err != nil {
 		return nil, err
 	}
@@ -161,6 +167,7 @@ func (r *RecurringBookingRepository) CreateBookings(e *RecurringBooking) ([]*Boo
 			Enter:       cur,
 			Leave:       cur.Add(e.Leave.Sub(e.Enter)),
 			Subject:     e.Subject,
+			Comment:     e.Comment,
 			RecurringID: NullUUID(e.ID),
 		}
 		res = append(res, booking)

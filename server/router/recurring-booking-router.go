@@ -21,6 +21,7 @@ type RecurringBookingRouter struct {
 type CreateRecurringBookingRequest struct {
 	SpaceID  string         `json:"spaceId" validate:"required,uuid"`
 	Subject  string         `json:"subject" validate:"omitempty,max=256"`
+	Comment  string         `json:"comment" validate:"omitempty,max=1024"`
 	Enter    time.Time      `json:"enter" validate:"required"`
 	Leave    time.Time      `json:"leave" validate:"required"`
 	End      time.Time      `json:"end" validate:"required"`
@@ -453,6 +454,7 @@ func (router *RecurringBookingRouter) copyFromRestModel(m *CreateRecurringBookin
 	e := &RecurringBooking{}
 	e.SpaceID = m.SpaceID
 	e.Subject = m.Subject
+	e.Comment = m.Comment
 	e.Enter = m.Enter
 	e.Leave = m.Leave
 	enterNew, err := GetLocationRepository().AttachTimezoneInformation(e.Enter, location)
@@ -492,6 +494,7 @@ func (router *RecurringBookingRouter) copyToRestModel(e *RecurringBooking, locat
 	m.UserID = e.UserID
 	m.SpaceID = e.SpaceID
 	m.Subject = e.Subject
+	m.Comment = e.Comment
 	m.Enter, _ = GetLocationRepository().AttachTimezoneInformation(e.Enter, location)
 	m.Leave, _ = GetLocationRepository().AttachTimezoneInformation(e.Leave, location)
 	m.End, _ = GetLocationRepository().AttachTimezoneInformation(e.End, location)

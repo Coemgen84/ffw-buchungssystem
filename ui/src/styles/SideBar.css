@@ -73,6 +73,7 @@ main[role="main"] {
   width: calc(100% - var(--sidebar-width-expanded)) !important;
   flex: 0 0 calc(100% - var(--sidebar-width-expanded)) !important;
   max-width: calc(100% - var(--sidebar-width-expanded)) !important;
+  padding-top: 48px;
 }
 
 /* fixed sidebar width on viewports xs + sm */

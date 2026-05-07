@@ -7,6 +7,17 @@
   height: 2rem;
 }
 
+.ffw-main-navbar .ffw-main-navbar-brand {
+  width: auto !important;
+  flex: 0 0 auto !important;
+  max-width: none !important;
+  margin-right: 2rem;
+}
+
+.ffw-main-navbar .ffw-main-navbar-brand > span {
+  display: inline-flex;
+}
+
 .navbar-nav .nav-link.active {
   color: var(--bs-primary) !important;
 }
