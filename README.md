@@ -1,100 +1,172 @@
-# Seatsurfing
+# Seatsurfing Extended
 
-[![](https://img.shields.io/github/v/release/seatsurfing/seatsurfing)](https://github.com/seatsurfing/seatsurfing/releases)
-[![](https://img.shields.io/github/release-date/seatsurfing/seatsurfing)](https://github.com/seatsurfing/seatsurfing/releases)
-[![](https://img.shields.io/github/actions/workflow/status/seatsurfing/seatsurfing/release.yml?branch=main)](https://github.com/seatsurfing/seatsurfing/actions)
-[![](https://img.shields.io/github/license/seatsurfing/seatsurfing)](https://github.com/seatsurfing/seatsurfing/blob/main/LICENSE)
+An extended fork of [Seatsurfing](https://github.com/seatsurfing/seatsurfing) — desk sharing, room reservation, and workspace booking with additional features for organizations that need more than the standard seat/desk model.
 
-## 🚀 Seatsurfing SaaS available!
+Base version: **v1.89.0** · Schema: **v45** · License: AGPL-3.0 (inherited from upstream)
 
-We offer [Seatsurfing](https://seatsurfing.io/) as a fully-hosted Software-as-a-Service (SaaS). [Start for free now](https://seatsurfing.io/sign-up)!
+---
 
-- **No installation required** - Get started immediately
-- **Microsoft Teams integration** - See [Microsoft AppSource marketplace](https://appsource.microsoft.com/product/office/WA200008773)
-- **Get it free** - Free for up to 10 users
-- **Automatic updates** - Always enjoy the latest features
-- **Managed infrastructure** - Servers in Germany (EU)
+## What's added
 
-## 📖 Introduction
+### 🚒 Vehicle Fields (Fahrzeug-Felder)
 
-Seatsurfing is a software which enables your organization's employees to book seats, desks and rooms.
+Spaces can represent vehicles, not just desks or rooms. Extended the Space entity with:
 
-This repository contains the Backend, which consists of:
+- **Vehicle Type** (`space_type=vehicle`) — distinguish vehicles from desks/rooms
+- **License Plate** (`license_plate`) — Kennzeichen field
+- **Capacity** (`capacity`) — seating/capacity count
 
-- The Server (REST API Backend) written in Go
-- User Self-Service Booking Web Interface ("Booking UI"), built as a Progressive Web Application (PWA) which can be installed on mobile devices
-- Admin Web Interface ("Admin UI")
-- Common TypeScript files for the two TypeScript/React web frontends
+Available in search, booking, admin UI, and all export functions.
 
-**[Visit project's website for more information.](https://seatsurfing.io)**
+### ✏️ Booking Corrections (Buchungsänderungen)
 
-## 📷 Screenshots
+Users can **edit their own bookings** instead of delete-and-rebook. Includes:
 
-### Web Admin UI
+- Correction flow with optional **approval requirement** per space (`correction_requires_approval`)
+- Admin notification when approval is needed
+- Works for single and recurring bookings
 
-![Seatsurfing Web Admin UI](https://raw.githubusercontent.com/seatsurfing/seatsurfing/main/.github/admin-ui.png)
+Original Seatsurfing only allows cancellation — no self-service editing.
 
-### Web Booking UI
+### 🎨 Dynamic Branding
 
-![Seatsurfing Web Booking UI](https://raw.githubusercontent.com/seatsurfing/seatsurfing/main/.github/booking-ui.png)
+No hardcoded logos or organization names in the code. Branding is controlled entirely via database settings:
 
-## 🗸 Quick reference
+- `custom_logo_url` — organization logo image URL
+- `custom_logo_text_line1` — primary text (e.g. organization name)
+- `custom_logo_text_line2` — secondary text (e.g. department)
 
-- **Maintained by:** [seatsurfing.io](https://seatsurfing.io/)
-- **Where to get help:** [Documentation](https://seatsurfing.io/docs/)
-- **Docker architectures:** [amd64, arm64](https://github.com/seatsurfing/seatsurfing/pkgs/container/backend)
-- **License:** [GPL 3.0](https://github.com/seatsurfing/seatsurfing/blob/main/LICENSE)
+**Default: neutral Seatsurfing branding.** Any organization-specific look is configured at runtime, not baked into the code.
 
-## 🐋 How to use the Docker image
+### 🇩🇪 German Defaults
 
-### Start using Docker Compose
+- Language: `de` (instead of `en`)
+- Date format: `d.m.Y`
+- Workdays: all 7 days enabled by default
+- `INIT_ORG_LANGUAGE` env var respected with German fallback
 
-```
+---
+
+## Differences from upstream
+
+| Area | Seatsurfing (upstream) | Seatsurfing Extended |
+|---|---|---|
+| Space types | Desk, Room | Desk, Room, **Vehicle** |
+| Booking changes | Cancel only | **Edit + Cancel**, approval workflow |
+| Branding | Hardcoded Seatsurfing | **Dynamic via DB**, neutral default |
+| Language default | English | **German** |
+| DB Schema | v45 | v45 (compatible, extended columns) |
+
+The database schema is fully backward-compatible — same schema version, additional columns on `spaces` and `bookings`.
+
+---
+
+## Deployment
+
+### Docker Compose (recommended)
+
+```yaml
 services:
-  server:
-    image: ghcr.io/seatsurfing/backend
-    restart: always
-    networks:
-      sql:
+  app:
+    image: seatsurfing-extended:latest
+    environment:
+      POSTGRES_URL: "postgres://user:pass@db:5432/seatsurfing?sslmode=disable"
+      PUBLIC_URL: http://your-host:8080
+      FRONTEND_URL: http://your-host:8080
+      CRYPT_KEY: "<32-byte-random-string>"
+      PUBLIC_SCHEME: http
     ports:
       - 8080:8080
-    environment:
-      POSTGRES_URL: 'postgres://seatsurfing:DB_PASSWORD@db/seatsurfing?sslmode=disable'
-      CRYPT_KEY: 'some-random-32-bytes-long-string'
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
+
   db:
     image: postgres:17
-    restart: always
-    networks:
-      sql:
+    environment:
+      POSTGRES_USER: seatsurfing
+      POSTGRES_PASSWORD: seatsurfing
+      POSTGRES_DB: seatsurfing
     volumes:
       - db:/var/lib/postgresql/data
-    environment:
-      POSTGRES_PASSWORD: DB_PASSWORD
-      POSTGRES_USER: seatsurfing
-      POSTGRES_DB: seatsurfing
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U seatsurfing"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   db:
-
-networks:
-  sql:
 ```
 
-This starts …
+### Build from source
 
-- … a PostgreSQL database with data stored on Docker volume "db"
-- … a Seatsurfing instance with port 8080 exposed
+```bash
+# Build UI
+cd ui && npm install && npm run build
 
-The Seatsurfing Booking UI is accessible at :8080/ui/search/ and the Seatsurfing Admin UI instance at :8080/ui/admin/.
+# Build Docker image
+docker buildx build --load -t seatsurfing-extended:latest .
 
-To login, use the default admin login (user `admin@seatsurfing.local` and password `Sea!surf1ng`) or set the [environment variables](https://seatsurfing.io/docs/self-hosted/config) `INIT_ORG_USER` and `INIT_ORG_PASS` to customize the admin login.
+# Run
+docker compose up -d
+```
 
-### Running on Kubernetes
+### Default credentials
 
-Please refer to our [Kubernetes documentation](https://seatsurfing.io/docs/self-hosted/kubernetes/).
+Fresh installation creates an admin user:
 
-## ⚙️ Environment variables
+- **Email:** `admin@seatsurfing.local`
+- **Password:** `Sea!urf1ng`
 
-Please check out the [documentation](https://seatsurfing.io/docs/self-hosted/config) for information on available environment variables and further guidance.
+⚠️ Change this immediately after first login.
 
-**Hint**: When running in an IPV6-only Docker/Podman environment with multiple network interfaces bound to the Frontend containers, setting the `LISTEN_ADDR` environment variable can be necessary as NextJS binds to only one network interface by default. Set it to `::` to bind to any address.
+---
+
+## Post-deploy configuration
+
+After a fresh install, configure branding in **Admin → Settings**:
+
+| Setting | Default | Purpose |
+|---|---|---|
+| `custom_logo_url` | *(empty)* | Organization logo URL |
+| `custom_logo_text_line1` | *(empty)* | Primary text beside logo |
+| `custom_logo_text_line2` | *(empty)* | Secondary text beside logo |
+| `show_names` | `0` | Show "Colleagues" in navbar (set to `1`) |
+| `default_language` | `de` | UI language for new users |
+| `default_timezone` | `Europe/Berlin` | Timezone for bookings |
+
+---
+
+## Syncing with upstream
+
+The fork tracks the upstream Seatsurfing repository:
+
+```bash
+git remote add upstream https://github.com/seatsurfing/seatsurfing.git
+git fetch upstream --tags
+git merge v1.xx.x
+```
+
+Custom changes are kept on `main`. Merge conflicts are typically in i18n files and `config.go` — resolved by keeping our defaults while accepting new upstream keys.
+
+---
+
+## Tech stack
+
+Inherited from Seatsurfing:
+
+- **Backend:** Go (repository pattern, no ORM, PostgreSQL)
+- **Frontend:** Next.js, React, TypeScript, Bootstrap
+- **Database:** PostgreSQL 17
+- **Deployment:** Docker, distroless final image
+
+---
+
+## License
+
+AGPL-3.0 — same as [Seatsurfing](https://github.com/seatsurfing/seatsurfing/blob/main/LICENSE).
+
+This project is a fork and is not affiliated with or endorsed by the Seatsurfing project.
