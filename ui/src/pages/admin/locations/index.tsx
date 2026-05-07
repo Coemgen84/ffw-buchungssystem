@@ -106,7 +106,7 @@ class Locations extends React.Component<Props, State> {
     ]);
     return this.ExcellentExport.convert(
       { anchor: e.target, filename: "seatsurfing-areas", format: "xlsx" },
-      [{ name: "FFW Areas", from: { array: [headers, ...rows] } }],
+      [{ name: "Seatsurfing Areas", from: { array: [headers, ...rows] } }],
     );
   };
 

@@ -427,7 +427,7 @@ class Login extends React.Component<Props, State> {
 
     const copyrightFooter = (
       <div className="copyright-footer">
-        &copy; FFW-Buchungssystem &#183;{" "}
+        &copy; Seatsurfing &#183;{" "}
         <a
           href="https://seatsurfing.io"
           target="_blank"
@@ -447,7 +447,7 @@ class Login extends React.Component<Props, State> {
             <h3>Domain not found.</h3>
             <p>
               Please make sure your domain name is set up correctly in
-              FFW-Buchungssystem&#39;s settings.
+              Seatsurfing&#39;s settings.
             </p>
             <p>If you believe this is an error, please contact support.</p>
           </Form>

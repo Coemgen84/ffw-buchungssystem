@@ -136,7 +136,7 @@ class ReportAnalysis extends React.Component<Props, State> {
       { anchor: e.target, filename: "seatsurfing-analysis", format: "xlsx" },
       [
         {
-          name: "FFW Analysis",
+          name: "Seatsurfing Analysis",
           from: { table: "datatable" },
           fixValue: fixFn,
         },

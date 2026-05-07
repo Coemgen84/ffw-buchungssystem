@@ -14,7 +14,7 @@ interface Props extends Omit<
 
 const AppLogo = ({
   src,
-  alt = "FFW-Buchungssystem",
+  alt = "Seatsurfing",
   fallbackSrc = "/ui/seatsurfing.svg",
   textLine1,
   textLine2,
